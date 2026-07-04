@@ -116,6 +116,24 @@ export function TraceEventItem({ item }: { item: TraceItem }) {
           (page {retrieveRule.citation.page}, score {retrieveRule.citation.score?.toFixed(2)})
         </span>
       </div>
+      {retrieveRule.hits.length > 0 && (
+        <ul className="trace-item__hits">
+          {retrieveRule.hits.map((hit) => {
+            const chosen =
+              hit.doc_id === retrieveRule.citation.doc_id &&
+              hit.page === retrieveRule.citation.page;
+            return (
+              <li
+                key={`${hit.doc_id}-${hit.page}`}
+                className={chosen ? "trace-item__hit trace-item__hit--chosen" : "trace-item__hit"}
+              >
+                {hit.doc_id} p{hit.page} · {hit.article} · score {hit.score.toFixed(2)}
+                {chosen ? " ✓" : ""}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

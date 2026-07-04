@@ -281,6 +281,25 @@ a {
   margin-left: 0.4rem;
 }
 
+.trace-item__hits {
+  list-style: none;
+  margin: 0.25rem 0 0 1.4rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.trace-item__hit {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.trace-item__hit--chosen {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
 /* --- Brief panel --- */
 .brief-panel__empty {
   color: var(--color-text-muted);
@@ -372,4 +391,8 @@ a {
 .validate-brief__done {
   color: var(--color-success);
   font-weight: 600;
+}
+
+.validate-brief__done--rejected {
+  color: var(--color-danger);
 }

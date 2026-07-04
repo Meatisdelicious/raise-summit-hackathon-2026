@@ -31,6 +31,14 @@ function subscribeToRunEvents(
       if (event.type === "done") {
         onDone();
         source.close();
+        return;
+      }
+      if (event.type === "error") {
+        // The backend publishes an ErrorEvent and then closes the bus, which would
+        // otherwise trigger source.onerror and clobber this specific message with the
+        // generic "connection lost" text. Close here so onerror can't fire.
+        source.close();
+        return;
       }
     } catch {
       onError("Failed to parse agent event.");

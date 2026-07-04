@@ -17,6 +17,18 @@ export function ValidateBriefButton({
   const [submitting, setSubmitting] = useState(false);
 
   if (brief.validated_by) {
+    // A rejection also sets validated_by/validated_at (see db/repo.reject_brief) and prepends a
+    // "[REJECTED …]" marker to recommended_action. There is no dedicated status field on the
+    // contract, so detect rejection from that prefix and render a distinct danger-toned state.
+    const rejected = brief.recommended_action.startsWith("[REJECTED");
+    if (rejected) {
+      return (
+        <p className="validate-brief__done validate-brief__done--rejected" role="alert">
+          Rejected by {brief.validated_by} on{" "}
+          {formatDateTime(brief.validated_at ?? brief.created_at)}.
+        </p>
+      );
+    }
     return (
       <p className="validate-brief__done">
         Validated by {brief.validated_by} on {formatDateTime(brief.validated_at ?? brief.created_at)}.

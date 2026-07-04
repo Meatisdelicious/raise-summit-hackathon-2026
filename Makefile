@@ -56,3 +56,14 @@ dev: ## Run the backend API (uvicorn) in replay mode
 .PHONY: demo
 demo: ## Run the backend in LIVE mode against Vultr (sources ./.env — kept out of apps/api so tests ignore it)
 	@set -a; [ -f .env ] && . ./.env; set +a; cd $(API_DIR) && CS_INFERENCE_MODE=live $(RUN) uvicorn cyclesentinel.main:app --reload
+
+.PHONY: web
+web: ## Run the frontend dev server (connects to the backend via the Vite /api proxy)
+	@cd $(WEB_DIR) && npm run dev
+
+.PHONY: stack
+stack: ## Run backend (replay) + frontend together — one command demo (Ctrl-C stops both)
+	@echo "API  → http://localhost:8000   ·   Web → http://localhost:5173"; \
+	( cd $(API_DIR) && CS_INFERENCE_MODE=replay $(RUN) uvicorn cyclesentinel.main:app ) & \
+	API_PID=$$!; trap "kill $$API_PID 2>/dev/null" EXIT INT TERM; \
+	cd $(WEB_DIR) && npm run dev
