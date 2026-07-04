@@ -6,6 +6,8 @@ API_DIR := apps/api
 WEB_DIR := apps/web
 export CS_INFERENCE_MODE ?= replay
 PY ?= python3
+# Prefer `uv run` so console scripts (uvicorn) resolve without activating the venv.
+RUN := $(shell command -v uv >/dev/null 2>&1 && echo 'uv run')
 
 .DEFAULT_GOAL := help
 
@@ -49,8 +51,8 @@ seed: ## Generate the synthetic corpus + demo cases (renders real page images vi
 
 .PHONY: dev
 dev: ## Run the backend API (uvicorn) in replay mode
-	@cd $(API_DIR) && CS_INFERENCE_MODE=replay uvicorn cyclesentinel.main:app --reload
+	@cd $(API_DIR) && CS_INFERENCE_MODE=replay $(RUN) uvicorn cyclesentinel.main:app --reload
 
 .PHONY: demo
 demo: ## Run the backend in LIVE mode against Vultr
-	@cd $(API_DIR) && CS_INFERENCE_MODE=live uvicorn cyclesentinel.main:app --reload
+	@cd $(API_DIR) && CS_INFERENCE_MODE=live $(RUN) uvicorn cyclesentinel.main:app --reload
