@@ -54,5 +54,5 @@ dev: ## Run the backend API (uvicorn) in replay mode
 	@cd $(API_DIR) && CS_INFERENCE_MODE=replay $(RUN) uvicorn cyclesentinel.main:app --reload
 
 .PHONY: demo
-demo: ## Run the backend in LIVE mode against Vultr
-	@cd $(API_DIR) && CS_INFERENCE_MODE=live $(RUN) uvicorn cyclesentinel.main:app --reload
+demo: ## Run the backend in LIVE mode against Vultr (sources ./.env — kept out of apps/api so tests ignore it)
+	@set -a; [ -f .env ] && . ./.env; set +a; cd $(API_DIR) && CS_INFERENCE_MODE=live $(RUN) uvicorn cyclesentinel.main:app --reload

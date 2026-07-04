@@ -150,12 +150,13 @@ flowchart TB
         API["FastAPI backend · cyclesentinel<br/>agent loop · 11 tools · 6 calculators"]
         LLM["Kimi K2.6<br/>POST /v1/chat/completions · temp 0 · JSON-only"]
         VS["Vultr Vector Store<br/>csohss · cslut · cspoor · csstim"]
-        RR["Vultron Prime-8B<br/>(ReRank)"]
+        RR["Vultron Prime-8B<br/>rerank · /v1/rerank"]
         DB["PostgreSQL + pgvector<br/>· SQLite in dev/CI ·"]
     end
     Web -->|"REST + SSE (frozen contract)"| API
     API -->|"plan / brief prose"| LLM
-    API -->|"retrieve_protocol_rule<br/>one collection per rule_type"| VS
+    API -->|"1 · recall (search)"| VS
+    VS -->|"2 · rerank candidates"| RR
     API --> DB
 
     style EU fill:#F5F7F8,stroke:#0B6E75
@@ -296,9 +297,9 @@ curl -N  localhost:8000/api/runs/<run_id>/events          # the live SSE agent t
 ### Going live on Vultr
 
 ```bash
-cp .env.example apps/api/.env      # fill VULTR_INFERENCE_API_KEY (ids already set: Kimi K2.6, cs prefix)
+cp .env.example .env               # fill VULTR_INFERENCE_API_KEY (ids already set: Kimi K2.6, cs prefix)
 python scripts/index_corpus.py     # build the per-rule_type Vector Store collections
-make demo                          # run the API in LIVE mode against Vultr
+make demo                          # run the API in LIVE mode against Vultr (sources ./.env)
 ```
 
 Model ids are confirmed against `GET /v1/models`: **`moonshotai/Kimi-K2.6`** (LLM) and the **Vultron** retriever family. Retrieval uses one Vector Store collection per `rule_type` (`csohss` / `cslut` / `cspoor` / `csstim`).

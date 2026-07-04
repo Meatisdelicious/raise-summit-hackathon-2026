@@ -4,9 +4,9 @@ Two clients, both hitting ``VULTR_INFERENCE_BASE_URL`` (already ``…/v1``) with
 
 * :class:`VultrLLMClient` — Kimi K2 Instruct via the OpenAI-compatible ``POST /v1/chat/completions``
   at ``temperature=0``, with tool-calling. This is the reasoning/tool-use LLM in the trace.
-* :class:`VultrPrimeRetriever` — the Vultron **Prime-8B** visual document retriever over the Vultr
-  Vector Store, queried in **retrieval-only** mode (``POST /v1/vector_store/{collection}/search``):
-  it returns scored protocol/SOP **pages** with their text layer, which the LLM then cites.
+* :class:`VultrPrimeRetriever` — two-stage retrieval-only: dense recall from the Vultr Vector Store
+  (``POST /v1/vector_store/{id}/search``) then **Vultron Prime-8B** rerank (``POST /v1/rerank``),
+  which scores the query against the candidate protocol/SOP pages and picks the governing one.
 
 We deliberately **never** call ``POST /v1/chat/completions/RAG`` — the one-shot RAG endpoint fuses
 retrieval and generation into a single call and would collapse the agent loop / hide the conditional
@@ -126,11 +126,17 @@ class VultrLLMClient:
         return _to_chat_response(body)
 
 
-# --- Vultr Vector Store search --------------------------------------------------------------
-# Real API (confirmed against /v1/vector_store): POST /vector_store/{id}/search with {"input",
-# "top_k"} returns {"results":[{"content"}]} — no server-side filter, no per-item metadata, no
-# score. So the branch queries the one collection for its rule_type (see retrieval/collections.py)
-# and we recover each hit's citation by matching the returned page text back to the local corpus.
+# --- Vultr retrieval: Vector Store recall + Vultron rerank --------------------------------------
+# Two confirmed endpoints:
+#   POST /vector_store/{id}/search  {"input","top_k"}  -> {"results":[{"content"}]}   (dense recall;
+#       the store embeds internally — no metadata, no score; ``model`` on the request is ignored).
+#   POST /rerank  {"model","query","documents":[...]}  -> {"results":[{index,relevance_score}]}
+#       -> this is where Vultron Prime-8B (a cross-encoder retriever/reranker) actually scores the
+#          query against the candidate pages and picks the governing one.
+# So the branch: recall the rule_type collection, then rerank with Vultron; the top page is the
+# citation, recovered by matching the returned text back to the local corpus.
+
+_RECALL_K = 6  # over-fetch for the reranker; the per-rule corpus is small, so this covers it.
 
 
 class _WireSearchResult(BaseModel):
@@ -141,6 +147,15 @@ class _WireSearchResponse(BaseModel):
     results: list[_WireSearchResult] = Field(default_factory=list)
 
 
+class _WireRerankResult(BaseModel):
+    index: int = 0
+    relevance_score: float = 0.0
+
+
+class _WireRerankResponse(BaseModel):
+    results: list[_WireRerankResult] = Field(default_factory=list)
+
+
 def _first_article(text: str) -> str:
     """Best-effort article label from a page's text (fallback when corpus match fails)."""
     match = _ARTICLE_RE.search(text)
@@ -148,45 +163,70 @@ def _first_article(text: str) -> str:
 
 
 class VultrPrimeRetriever:
-    """Conditional retrieval over the Vultr Vector Store (one collection per ``rule_type``).
+    """Conditional retrieval: Vultr Vector Store recall + **Vultron Prime-8B** rerank.
 
-    Retrieval-only: returns pages; generation stays in :class:`VultrLLMClient` (we never call
-    ``/chat/completions/RAG``). The store has no filter/metadata, so the branch searches exactly the
-    ``rule_type`` collection and citations are recovered by matching returned text to the corpus.
+    Retrieval-only (generation stays in :class:`VultrLLMClient`; we never call ``/chat/completions/
+    RAG``). The branch recalls exactly its ``rule_type`` collection, then Vultron reranks the
+    candidate pages to pick the governing article; citations are recovered against the local corpus.
     """
 
     def __init__(self, settings: Settings) -> None:
         self._base_url = settings.vultr_inference_base_url.rstrip("/")
         self._api_key = settings.vultr_inference_api_key
         self._prefix = settings.vultr_vector_collection or "cs"
+        self._model = settings.cs_retriever_model  # Vultron Prime-8B — actually used, for rerank
         corpus = load_corpus(_CORPUS_DIR)
         self._by_text = {page.text.strip(): page for page in corpus.pages}
 
-    async def retrieve(self, query: str, rule_type: RuleType, top_k: int) -> list[RetrievalHit]:
-        """Search the ``rule_type`` collection for ``query`` and return the top-k pages as hits."""
-        collection = collection_id(self._prefix, rule_type)
-        payload: dict[str, object] = {"input": query, "top_k": top_k}
-        headers = {
-            "Authorization": f"Bearer {self._api_key}",
-            "Content-Type": "application/json",
-        }
+    @property
+    def _headers(self) -> dict[str, str]:
+        return {"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"}
+
+    async def _recall(self, client: httpx.AsyncClient, collection: str, query: str) -> list[str]:
+        """Dense recall from the Vector Store: return candidate page texts (verbatim)."""
         url = f"{self._base_url}/vector_store/{collection}/search"
+        resp = await client.post(
+            url, json={"input": query, "top_k": _RECALL_K}, headers=self._headers
+        )
+        resp.raise_for_status()
+        wire = _WireSearchResponse.model_validate(resp.json())
+        return [r.content for r in wire.results]
+
+    async def _rerank(
+        self, client: httpx.AsyncClient, query: str, docs: list[str]
+    ) -> list[tuple[str, float]]:
+        """Rerank ``docs`` vs ``query`` with Vultron Prime-8B; return (text, score) best-first."""
+        resp = await client.post(
+            f"{self._base_url}/rerank",
+            json={"model": self._model, "query": query, "documents": docs},
+            headers=self._headers,
+        )
+        resp.raise_for_status()
+        wire = _WireRerankResponse.model_validate(resp.json())
+        ranked = [
+            (docs[r.index], r.relevance_score) for r in wire.results if 0 <= r.index < len(docs)
+        ]
+        return ranked or [(d, 0.0) for d in docs]  # fall back to recall order on an empty rerank
+
+    async def retrieve(self, query: str, rule_type: RuleType, top_k: int) -> list[RetrievalHit]:
+        """Recall the ``rule_type`` collection, rerank with Vultron, return the top-k as hits."""
+        collection = collection_id(self._prefix, rule_type)
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            resp = await client.post(url, json=payload, headers=headers)
-            resp.raise_for_status()
-            body: object = resp.json()
-        wire = _WireSearchResponse.model_validate(body)
+            candidates = await self._recall(client, collection, query)
+            if not candidates:
+                return []
+            ranked = await self._rerank(client, query, candidates)
         hits: list[RetrievalHit] = []
-        for rank, result in enumerate(wire.results[:top_k]):
-            page = self._by_text.get(result.content.strip())
+        for text, score in ranked[:top_k]:
+            page = self._by_text.get(text.strip())
             hits.append(
                 RetrievalHit(
                     doc_id=page.doc_id if page else "",
                     rule_type=rule_type,
                     page=page.page if page else 0,
-                    score=round(1.0 - 0.05 * rank, 3),  # rank proxy — the API returns no score
-                    text=result.content,
-                    article=page.article if page else _first_article(result.content),
+                    score=round(score, 4),
+                    text=text,
+                    article=page.article if page else _first_article(text),
                 )
             )
         return hits

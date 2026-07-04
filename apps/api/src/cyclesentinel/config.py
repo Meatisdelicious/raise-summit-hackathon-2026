@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     vultr_inference_api_key: str = ""
     vultr_inference_base_url: str = "https://api.vultrinference.com/v1"
     cs_llm_model: str = ""
-    cs_retriever_model: str = "vultr/VultronRetrieverPrime-Qwen3.5-8B"  # ReRank model (optional)
+    cs_retriever_model: str = "vultr/VultronRetrieverPrime-Qwen3.5-8B"  # reranks recalled pages
 
     # --- Protocol/SOP corpus store, EU region. `vultr_vector_collection` is a short PREFIX; the
     # per-rule_type collection id comes from retrieval.collections.collection_id (e.g. cs+ohss). ---
