@@ -1,0 +1,25 @@
+# gitleaks config for LoopCloser — secrets + a few health/PII heuristics.
+# Baseline rules ship with gitleaks; this adds project-specific allow/deny.
+title = "LoopCloser gitleaks"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "vultr-inference-key"
+description = "Vultr inference API key assignment with a real-looking value"
+regex = '''(?i)VULTR_INFERENCE_API_KEY\s*[:=]\s*['\"]?[A-Za-z0-9._-]{16,}['\"]?'''
+
+[allowlist]
+description = "Ignore example/synthetic material and docs"
+paths = [
+  '''\.env\.example$''',
+  '''^data/synthetic/''',
+  '''^docs/''',
+  '''^tasks/''',
+  '''^\.github/''',
+]
+regexes = [
+  '''example\.(com|org)''',
+  '''loopcloser:loopcloser@localhost''',   # the local dev DB DSN
+]
