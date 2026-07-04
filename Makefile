@@ -63,8 +63,17 @@ web: ## Run the frontend dev server (connects to the backend via the Vite /api p
 	@cd $(WEB_DIR) && npm run dev
 
 .PHONY: stack
-stack: ## Run backend (replay) + frontend together — one command demo (Ctrl-C stops both)
-	@echo "API  → http://localhost:8000   ·   Web → http://localhost:5173"; \
+stack: ## Run backend (replay, offline) + frontend together (Ctrl-C stops both)
+	@echo "API  → http://localhost:8000 (replay)   ·   Web → http://localhost:5173"; \
 	( cd $(API_DIR) && CS_INFERENCE_MODE=replay $(RUN) uvicorn cyclesentinel.main:app ) & \
+	API_PID=$$!; trap "kill $$API_PID 2>/dev/null" EXIT INT TERM; \
+	cd $(WEB_DIR) && npm run dev
+
+.PHONY: demo-stack
+demo-stack: ## THE LIVE DEMO — backend LIVE on Vultr + frontend together (sources ./.env; Ctrl-C stops both)
+	@if [ ! -f .env ]; then echo "error: create ./.env from .env.example with your VULTR_INFERENCE_API_KEY"; exit 1; fi; \
+	echo "API  → http://localhost:8000 (LIVE · Vultr)   ·   Web → http://localhost:5173"; \
+	set -a; . ./.env; set +a; \
+	( cd $(API_DIR) && CS_INFERENCE_MODE=live $(RUN) uvicorn cyclesentinel.main:app ) & \
 	API_PID=$$!; trap "kill $$API_PID 2>/dev/null" EXIT INT TERM; \
 	cd $(WEB_DIR) && npm run dev

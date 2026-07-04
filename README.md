@@ -287,11 +287,15 @@ raise-summit-hackathon-2026/
 ## 🚀 Getting started
 
 ```bash
-make install        # uv sync (fetches Python 3.12 + deps)
+make install        # backend deps (uv, Python 3.12) + frontend deps (npm)
 make verify         # lint + mypy --strict + tests (replay) + privacy  → the pre-commit gate
-make dev            # run the API offline in replay mode (deterministic, no keys needed)
-make seed           # regenerate the synthetic corpus + demo cases
+make stack          # backend (replay, offline) + the React UI → http://localhost:5173
+make demo-stack     # THE LIVE DEMO: backend on Vultr (Kimi K2.6 + Vultron) + the UI, one command
 ```
+
+`make stack` runs everything offline (deterministic cassettes, no keys). `make demo-stack` runs the
+**real** thing — the UI drives the live agent on Vultr and the trace streams in as the models think.
+Both open the app at **http://localhost:5173**.
 
 Hit it:
 
@@ -306,7 +310,7 @@ curl -N  localhost:8000/api/runs/<run_id>/events          # the live SSE agent t
 ```bash
 cp .env.example .env               # fill VULTR_INFERENCE_API_KEY (ids already set: Kimi K2.6, cs prefix)
 python scripts/index_corpus.py     # build the per-rule_type Vector Store collections
-make demo                          # run the API in LIVE mode against Vultr (sources ./.env)
+make demo-stack                    # LIVE backend on Vultr + the UI (or `make demo` for the API alone)
 ```
 
 Model ids are confirmed against `GET /v1/models`: **`moonshotai/Kimi-K2.6`** (LLM) and the **Vultron** retriever family. Retrieval uses one Vector Store collection per `rule_type` (`csohss` / `cslut` / `cspoor` / `csstim`).

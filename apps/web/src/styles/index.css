@@ -471,9 +471,33 @@ a:hover {
 }
 
 .run-controls__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--text-sm);
+}
+
+.run-controls__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  flex: none;
+  animation: run-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes run-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .alert {
