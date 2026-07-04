@@ -1,40 +1,39 @@
-# Safety, privacy & compliance
+# Safety, privacy & boundary
 
-Condensed from [`docs/doc.md`](doc.md) §12, §19, §20. **Binding on every build-agent.**
+Binding on everyone working in this repo.
 
-## Privacy — the hard rule
-- **Public repo + hosted demo contain synthetic data only.** No real report is sent to Vultr or any
-  external model.
-- No real identifier, clinician name, organization, logo, dossier number, or original-report metadata
-  in commits, issues, screenshots, logs, prompts, or presentation material.
-- Real/original material lives only under `data/private/` (git-ignored; must be empty in the public
-  tree). The Phase-0 gate (`make privacy` / `/privacy-gate`) hard-blocks the build until the tree is
-  verified clean.
-- Health data is sensitive personal data; pseudonymization does not make it anonymous.
+## Product boundary — why this is not a "medical advice bot"
+- **Enterprise user = the lab biologist + the PMA clinician. Never the patient.** Cycle Sentinel is
+  internal triage / professional clinical-decision-support, exactly like a clinical-trial-matching tool.
+- **A human validates before anything reaches the clinic or patient.** The agent drafts a brief and an
+  escalation flag; the biologist approves/edits/rejects. No output is auto-sent.
+- **No autonomous clinical verdict.** The LLM interprets and writes prose; **deterministic calculators +
+  rules decide the escalation flag**. The agent does not diagnose, prescribe, choose a dose, or apply a
+  guideline on its own — it surfaces the cited rule for a human to act on.
+- **Everything is grounded.** Every clause of a brief resolves to a numbered **protocol/SOP article**. No
+  ungrounded recommendation ships.
+- **Fail safe.** Missing/ambiguous data → `MISSING_TIMEPOINT` / `AMBIGUOUS_REQUIRES_REVIEW`, never a
+  silent "normal." Anything that should escalate must never resolve to `ROUTINE_CONTINUE`.
 
-## Synthetic-generation rules (spec §12.2)
-Fictional names/addresses/orgs/IDs/clinicians · all dates and numeric values changed · no copied
-logos/branding/dossier numbers/exact layouts · cleared PDF metadata · every page watermarked
-`SYNTHETIC DATA — NOT FOR CLINICAL USE` · deterministic generator seed · generator + templates in the
-repo · documents under `data/synthetic/` · a manifest mapping each document to its ground truth · do
-not train a model on any real source report.
+## Privacy — synthetic only (hard rule)
+- Serial hormone results tied to a patient are **Article-9 sensitive personal data**. The public repo and
+  the hosted demo use **synthetic data only**. No real result, identifier, or original PDF/report anywhere
+  — repo, Vultr, prompts, logs, screenshots, or the demo.
+- Real/original material lives only under `data/private/` (git-ignored; empty in the tracked tree). The
+  privacy gate (`make privacy` / `scripts/privacy_scan.py`) hard-blocks commits that would leak it, and
+  runs as a required CI job.
+- Synthetic generation: fictional patients, changed dates/values, cleared metadata, a deterministic seed,
+  the generator + templates in the repo, a manifest mapping each case to its ground truth.
 
-## Product safety
-- Explicit clinician-authored recommendation required — the agent never decides that a result *needs*
-  follow-up on its own.
-- Deterministic hard validation before any closure; the LLM can never override a validator.
-- Human review on ambiguity; human approval before any external action.
-- No diagnosis, interpretation, treatment, clinical-risk score, or guideline adjudication.
-- Complete audit trail; **fail open to review** — uncertainty keeps the loop visible, never silently
-  closed. **False closure = 0.**
+> ⚠️ A real-PHI leak already occurred once in this repo's history (lab PDFs under
+> `docs/healthcare_data/`). Treat the privacy gate as non-optional. Never commit real lab documents.
 
-## Security baseline (spec §20)
-Private object-storage bucket · TLS everywhere · server-side secrets only · least-privilege creds ·
-separate dev/demo creds · authenticated approval endpoint · short-lived signed document URLs · file
-type/size/checksum validation · no executable uploads · dependency + secret scanning in CI · structured
-audit events without full document text · synthetic-only backups · credential rotation after the event.
+## Sovereignty (Vultr / HDS)
+Host the agent + protocol/SOP vector store in an **EU region**, **HDS-aligned** — the sovereign
+alternative to sensitive fertility data leaving the EU. The hackathon must not claim production HDS
+certification or clinical efficacy; this is an engineering boundary, not legal or medical advice.
 
-## Not production
-The hackathon must not claim production compliance, clinical efficacy, or HDS eligibility. A real
-deployment would require a formal legal, privacy, security, clinical-safety, and procurement
-assessment. This spec is an engineering boundary, not legal or medical advice.
+## Security baseline
+Private object-storage bucket · TLS everywhere · server-side secrets only · authenticated validation/
+escalation endpoint · audit trail of runs, tools, decisions, and human validations · dependency + secret
+scanning in CI · synthetic-only data.

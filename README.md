@@ -1,53 +1,45 @@
-# LoopCloser
+# Cycle Sentinel
 
-**A document-grounded healthcare follow-up agent — RAISE Summit Hackathon 2026 (Vultr enterprise-agent track).**
+**An ovarian-stimulation monitoring & escalation agent — RAISE Summit Hackathon 2026 (Vultr enterprise track).**
 
-LoopCloser turns explicit, clinician-authored follow-up instructions ("repeat this test within six
-months") into tracked, auditable obligations. It plans where proof of completion should exist,
-retrieves evidence by class more than once, validates candidates with deterministic tools, assigns one
-of six constrained operational states, and drafts the next staff action — every conclusion cited to a
-document page, every external action gated on human approval. **It does not practice medicine.**
+For every new serial hormone result in an IVF stimulation cycle, Cycle Sentinel rebuilds the patient's
+trajectory, computes the risk signals, pulls the exact protocol/SOP rule the computation says applies, and
+hands the **lab biologist** a **cited, ready-to-validate escalation brief** — before a missed or mis-timed
+value wrecks the cycle. It is **internal triage for professionals — never patient-facing advice.**
 
-> ⚠️ **Synthetic data only.** This public repo and the hosted demo use fictional, generated documents.
-> No real patient data is present. See [`docs/safety.md`](docs/safety.md).
+> ⚠️ **Synthetic data only.** Serial hormone data is Article-9 sensitive. No real patient data belongs in
+> this repo or the demo. See [`docs/safety.md`](docs/safety.md).
 
-## How this repo is built
-LoopCloser is built by collaborating AI agents (Claude Code) working in isolated git worktrees, each
-opening a PR a human merges. The build is driven by a `/loop` orchestrator over a dependency-ordered
-task graph.
-
-```
-/privacy-gate                 # Phase 0 hard gate — must pass first
-/loop /orchestrate            # lead: computes the next wave, spawns parallel worktree workers → PRs
-                              # you merge the green PRs; the loop re-plans the next wave
-```
-
-### Read these
+## Read these
 | Doc | Purpose |
 |---|---|
-| [`AGENTS.md`](AGENTS.md) | Build constitution — non-negotiables, ownership, DoD. **Read first.** |
-| [`docs/doc.md`](docs/doc.md) | Canonical product & implementation spec (27 sections) |
-| [`docs/PRD.md`](docs/PRD.md) | Condensed product brief |
-| [`docs/CONTRACTS.md`](docs/CONTRACTS.md) | Frozen interfaces every module imports |
-| [`docs/TASKS.md`](docs/TASKS.md) + [`tasks/`](tasks/) | The wave/dependency task graph |
-| [`docs/WORKTREES.md`](docs/WORKTREES.md) | Worktree + PR protocol |
+| [`docs/PRD.md`](docs/PRD.md) | Product brief — problem, users, the "not RAG" thesis, judging fit |
+| [`docs/doc.md`](docs/doc.md) | Technical spec — agent loop, tools, calculators, states, data, demo cases |
+| [`docs/CONTRACTS.md`](docs/CONTRACTS.md) | API contract (REST + SSE + TS types) the React app builds against |
 | [`docs/architecture.md`](docs/architecture.md) | System architecture on Vultr |
-| [`docs/demo-script.md`](docs/demo-script.md) | The two-minute demo |
+| [`docs/demo-script.md`](docs/demo-script.md) | The 2-minute "killer patient" demo |
+| [`docs/safety.md`](docs/safety.md) | Safety & privacy boundary |
+| [`AGENTS.md`](AGENTS.md) | Conventions + non-negotiables |
+
+## The idea in one loop
+plan → retrieve patient context → retrieve trajectory → **compute** (E2 rate, OHSS composite, P4-for-day)
+→ **branch → conditionally retrieve** the governing rule (OHSS SOP / luteinization / poor-responder) →
+compute next action → **cited brief + escalation** → human validates. The conditional retrievals can't be
+issued up front — which is why it's an agent, not RAG.
 
 ## Stack
-Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy + Alembic · PostgreSQL · React + TS + Vite + TanStack
-Query + SSE · Playwright · pytest · **Vultr** Serverless Inference + Object Storage + Managed
-PostgreSQL + Compute.
+Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy + pgvector · React + TypeScript (Raph) · **Vultr**
+Serverless Inference + EU vector store (HDS-aligned) + Object Storage + Compute.
 
-## Quick start (once the build has produced code)
+## Dev
 ```
-cp .env.example .env      # fill for live mode; replay mode needs no secrets
+cp .env.example .env      # replay mode needs no secrets; live mode needs Vultr keys
 make install
-make db-up migrate seed
-make verify               # lint + typecheck + test + eval + privacy + ownership (replay mode)
-make demo                 # run in live mode against Vultr
+make verify               # lint + typecheck + test + privacy (replay mode)
+make dev                  # run the API
 ```
 
-## The five hard rules
-1. Synthetic data only. 2. Vultr on the live critical path. 3. False-closure = 0. 4. No medical advice.
-5. Never invent a state (6) or a tool (8). Full text in [`AGENTS.md`](AGENTS.md).
+## The four hard rules
+1. Synthetic data only. 2. Internal triage — never patient-facing. 3. Every recommendation cites a
+protocol article. 4. Keep it an agent (trajectory + computation-driven conditional retrieval + branching),
+not RAG. Full text in [`AGENTS.md`](AGENTS.md).
