@@ -14,7 +14,8 @@ jobs:
       CS_INFERENCE_MODE: live
       VULTR_INFERENCE_API_KEY: ${{ secrets.VULTR_INFERENCE_API_KEY }}
       VULTR_INFERENCE_BASE_URL: ${{ secrets.VULTR_INFERENCE_BASE_URL }}
-      VULTR_MODEL: ${{ secrets.VULTR_MODEL }}
+      CS_LLM_MODEL: ${{ secrets.CS_LLM_MODEL }}                 # Kimi K2 Instruct (confirm id via /v1/models)
+      CS_RETRIEVER_MODEL: vultr/VultronRetrieverPrime-Qwen3.5-8B
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

@@ -58,7 +58,7 @@ retried once against the schema, then `AMBIGUOUS_REQUIRES_REVIEW`. The LLM plans
 | `compute_e2_per_follicle` | estradiol per mature follicle (needs follicle count from context/scan) |
 | `compute_ohss_composite` | OHSS-risk composite from E2 level, rate, follicle count, PCOS flag |
 | `check_progesterone_for_day` | progesterone vs the cycle-day-dependent threshold |
-| `retrieve_protocol_rule` | **conditional** vector retrieval of a rule, filtered by `rule_type` (ohss / luteinization / poor_responder / stimulation), returns text + article citation |
+| `retrieve_protocol_rule` | **conditional visual document retrieval** (Vultron **Prime-8B**) of a rule, filtered by `rule_type` (ohss / luteinization / poor_responder / stimulation), returns the top-k protocol/SOP **page(s)** with scores + the page **text layer** + article citation |
 | `lookup_dose_adjustment` | gonadotropin dose-adjustment range for the situation (from protocol table) |
 | `compute_next_draw_timing` | next monitoring interval given the trajectory (e.g. 24h vs 48h) |
 | `create_monitoring_brief` | assemble the cited brief object |
@@ -66,6 +66,13 @@ retried once against the schema, then `AMBIGUOUS_REQUIRES_REVIEW`. The LLM plans
 
 Tool args/results are Pydantic-validated (schemas in [`CONTRACTS.md`](CONTRACTS.md)). The model may not
 call an unregistered tool.
+
+> **Retrieval is visual + explicit.** `retrieve_protocol_rule` is backed by the Vultron **Prime-8B**
+> visual document retriever (see §8), and it is called **as an agent tool, once per branch** — we do
+> **not** use Vultr's one-shot `POST /v1/chat/completions/RAG` endpoint, which would fuse retrieval and
+> generation into a single call and collapse the agent loop / hide the conditional retrieval that is the
+> whole demo. Because Prime-8B retrieves **pages** and the LLM (Kimi K2) is text-only, each retrieved
+> page carries a **text layer** the LLM reads to cite the exact article.
 
 ## 4. Escalation / decision states (constrained set)
 
@@ -99,12 +106,15 @@ they're cited, not hardcoded magic numbers:
 - **`results`** — id, patient_id, `cycle_day`, `drawn_at`, and analytes: `e2`, `lh`, `progesterone`,
   optional `fsh`, `hcg`, plus optional `mature_follicle_count` (from a monitoring scan).
 - **`briefs`** — id, patient_id, result_id, `state[]`, `interpretation`, `recommended_action`,
-  `citations[]`, `escalation_level`, `validated_by`, `validated_at`, `run_id`.
+  `citations[]` (each `{doc_id, rule_type, page, article, quote}`), `escalation_level`, `validated_by`,
+  `validated_at`, `run_id`.
 - **`agent_runs` / `steps`** — run id, ordered steps (tool name, args summary, result summary, latency),
   final state, correlation id — powers the live trace + audit.
-- **Protocol/SOP corpus** (vector store) — a synthetic **stimulation protocol**, **OHSS-prevention SOP**,
-  **premature-luteinization rule**, **poor-responder management**, each split into numbered
-  **articles/sections** for per-line citation.
+- **Protocol/SOP corpus — page-indexed for visual retrieval.** A synthetic **stimulation protocol**,
+  **OHSS-prevention SOP**, **premature-luteinization rule**, and **poor-responder management**, each
+  **rendered to pages**. Each page is stored as: the **page image** (embedded by Prime-8B for visual
+  retrieval), a **text layer** (the page's text — we own the synthetic corpus, so it's exact), the
+  visible **article/section label**, and `rule_type`. Citations resolve to `{doc_id, page, article}`.
 
 ## 7. Synthetic demo cases (ground truth)
 
@@ -121,22 +131,40 @@ something.
 
 ## 8. Vultr architecture (on the critical path)
 
-- **Vultr Serverless Inference** — planning, interpretation-in-trajectory-context, brief prose generation,
-  tool-selection. Temperature 0. On the live path (must be visible in the demo trace).
-- **Vultr vector store (EU region)** — the protocol/SOP corpus; queried by `retrieve_protocol_rule`.
-  pgvector on Vultr Managed PostgreSQL (EU) is the default; keep it swappable.
-- **Vultr Object Storage** — synthetic protocol/SOP source docs (private bucket).
+Everything runs on Vultr Serverless Inference — an all-Qwen3.5-lineage, EU-hosted stack.
+
+- **LLM — Kimi K2 Instruct** (`CS_LLM_MODEL`): planning, interpretation-in-trajectory-context,
+  tool-selection, brief prose. Temperature 0. On the live path (must be visible in the demo trace).
+  Called via `POST /v1/chat/completions` (OpenAI-compatible). **Text-only** → the agent feeds it the
+  retrieved page's **text layer** to ground citations.
+- **Retriever — Vultron `Prime-8B`** (`CS_RETRIEVER_MODEL = vultr/VultronRetrieverPrime-Qwen3.5-8B`):
+  a **Visual Document Retrieval** model (Qwen3.5-VL-Embedding lineage). Embeds protocol/SOP **page
+  images** at index time and the query at run time; `retrieve_protocol_rule` scores + returns the top-k
+  pages, filtered by `rule_type`. Chosen tier = Prime-8B for max retrieval precision on stage.
+- **Vector store (EU region)** — Prime-8B page embeddings live in **Vultr Vector Store** (EU), queried
+  in **retrieval-only** mode by our tool. Fallback: **pgvector** on Vultr Managed PostgreSQL (EU) if a
+  retrieval-only path isn't exposed. Swappable via `VECTOR_STORE`.
+- **Vultr Object Storage** — synthetic protocol/SOP source pages (private bucket).
 - **Vultr Compute** — hosts the FastAPI app.
-- **Sovereignty story:** hormone data + protocol corpus stay in an EU region, **HDS-aligned** — the
-  sovereign alternative to sensitive fertility data leaving the EU.
+- **API surface:** `GET /v1/models` (list ids + `capabilities`) → **confirm the exact `id`s** for Kimi K2
+  and Prime-8B; `POST /v1/chat/completions` for the LLM. We do **not** use `POST /v1/chat/completions/RAG`
+  (one-shot RAG would collapse the agent loop — see §3).
+- **Sovereignty story:** hormone data + protocol corpus + inference all stay in an EU region,
+  **HDS-aligned** — the sovereign alternative to sensitive fertility data leaving the EU.
 
-## 9. Stack & inference modes
+## 9. Stack, models & inference modes
 
-- **Backend:** Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy + pgvector · pytest. Package `cyclesentinel`
-  under `apps/api/`.
+- **Backend:** Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy (+ pgvector fallback) · pytest. Package
+  `cyclesentinel` under `apps/api/`.
 - **Frontend:** React + TypeScript (Raph), builds against [`CONTRACTS.md`](CONTRACTS.md).
+- **Models (Vultr Serverless Inference)** — set via env, exact `id`s confirmed against `GET /v1/models`:
+  - `CS_LLM_MODEL` = **Kimi K2 Instruct** (text-only reasoning/tool-use LLM).
+  - `CS_RETRIEVER_MODEL` = **`vultr/VultronRetrieverPrime-Qwen3.5-8B`** (visual document retriever).
+  - `VULTR_INFERENCE_BASE_URL` = `https://api.vultrinference.com/v1`.
+  - `VECTOR_STORE` = `vultr` (Vultr Vector Store, EU) | `pgvector` (fallback).
 - **Inference modes** (env `CS_INFERENCE_MODE`): `live` (Vultr — the demo), `replay` (recorded
-  cassettes — CI/tests, deterministic), `stub` (canned outputs — unit tests). CI never calls Vultr.
+  cassettes for both LLM + retriever — CI/tests, deterministic), `stub` (canned outputs — unit tests).
+  CI never calls Vultr.
 
 ## 10. Demo & safety
 

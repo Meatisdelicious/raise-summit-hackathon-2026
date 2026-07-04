@@ -27,8 +27,12 @@ Short conventions file for anyone (human or AI) working in this repo. The produc
 - **Backend** (`apps/api`, pkg `cyclesentinel`): Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy +
   pgvector · pytest. Exposes JSON + one SSE trace endpoint.
 - **Frontend** (`apps/web`): React + TypeScript (built by Raph). Builds against `docs/CONTRACTS.md`.
-- **Inference:** Vultr Serverless Inference (temperature 0 for planning/interpretation). Protocol/SOP
-  vector store on Vultr in an **EU region** (HDS-aligned).
+- **Inference (Vultr Serverless Inference, EU, temperature 0):** LLM **Kimi K2 Instruct** (`CS_LLM_MODEL`,
+  text-only) via `POST /v1/chat/completions`; retriever **Vultron Prime-8B**
+  (`CS_RETRIEVER_MODEL=vultr/VultronRetrieverPrime-Qwen3.5-8B`) for **visual document retrieval** over
+  protocol/SOP page images. Confirm exact ids via `GET /v1/models`. Do **not** use the one-shot
+  `/v1/chat/completions/RAG` endpoint (it would collapse the agent loop). Protocol pages + embeddings in
+  Vultr Vector Store, **EU region** (HDS-aligned); pgvector fallback.
 
 ## Conventions
 - Python: `ruff` + `mypy --strict` clean; Pydantic v2; async FastAPI. Frontend: `tsc` strict, no `any`.

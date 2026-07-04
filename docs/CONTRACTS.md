@@ -56,9 +56,20 @@ export interface HormoneResult {
 export interface Citation {
   doc_id: string;             // e.g. "ohss_sop"
   rule_type: RuleType;
-  article: string;            // e.g. "§4.2"
+  page: number;               // the retrieved protocol/SOP page (visual doc retrieval)
+  article: string;            // e.g. "§4.2" (read from the page's text layer)
   quote: string;              // the cited line(s)
-  page?: number | null;
+  score?: number | null;      // retriever relevance score for that page
+}
+
+// A single hit returned by the visual retriever (Vultron Prime-8B) behind retrieve_protocol_rule.
+export interface RetrievalHit {
+  doc_id: string;
+  rule_type: RuleType;
+  page: number;
+  score: number;              // Prime-8B relevance score
+  text: string;               // the page's text layer (fed to the text-only LLM for grounding)
+  article: string;
 }
 
 export interface ComputedSignal {
@@ -131,7 +142,7 @@ export type AgentEvent =
   | { type: "retrieve";           run_id: string; step: number; what: "patient_context" | "trajectory"; summary: string }
   | { type: "compute";            run_id: string; step: number; signal: ComputedSignal }
   | { type: "branch";             run_id: string; step: number; reason: string; rule_type: RuleType }   // why it's about to retrieve a rule
-  | { type: "retrieve_rule";      run_id: string; step: number; rule_type: RuleType; citation: Citation }
+  | { type: "retrieve_rule";      run_id: string; step: number; rule_type: RuleType; hits: RetrievalHit[]; citation: Citation }  // visual doc retrieval (Prime-8B): pages + scores
   | { type: "action";             run_id: string; step: number; name: "dose_adjustment" | "next_draw_timing"; detail: string }
   | { type: "brief";              run_id: string; step: number; brief: MonitoringBrief }
   | { type: "escalate";           run_id: string; step: number; level: EscalationLevel; to: string }    // e.g. "biologist"
@@ -150,3 +161,7 @@ agent went back for another document *because of what it just computed*. The **r
 - The brief view: render `interpretation` + `recommended_action`, and make each `Citation` clickable to
   show `article` + `quote`. Show `states[]` as flags and `escalation_level` prominently.
 - Validation: the biologist action calls `POST /briefs/{id}/validate`; reflect `validated_by/at`.
+- Retrieval is **visual** (Vultron Prime-8B over protocol/SOP page images). For the trace, the
+  `retrieve_rule` event carries `hits: RetrievalHit[]` (pages + scores) plus the chosen `citation` — you
+  can show the retrieved **page** (and its score) as the visible proof the agent fetched a specific
+  document. Citations are **page-based**: link each `Citation` to `doc_id` + `page` + `article` + `quote`.
