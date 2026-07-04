@@ -6,7 +6,7 @@ import { formatProtocol } from "../../lib/format";
 export function PatientListRow({ patient, latestBrief }: PatientWithBrief) {
   return (
     <li className="patient-row">
-      <Link to={`/patients/${patient.id}`} className="patient-row__link">
+      <Link to={`/app/patients/${patient.id}`} className="patient-row__link">
         <span className="patient-row__label">{patient.label}</span>
         <span className="patient-row__meta">
           {formatProtocol(patient.protocol)} · Day {patient.cycle_day}

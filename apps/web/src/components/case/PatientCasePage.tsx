@@ -27,7 +27,7 @@ export function PatientCasePage() {
   return (
     <section aria-labelledby="case-heading">
       <p>
-        <Link to="/">&larr; Back to patient list</Link>
+        <Link to="/app">&larr; Back to patient list</Link>
       </p>
       <h1 id="case-heading">{patient.label}</h1>
       <p className="case-page__meta">
