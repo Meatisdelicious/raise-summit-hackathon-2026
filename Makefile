@@ -44,6 +44,13 @@ privacy: ## Privacy scan — no real hormone data / identifiers / PDFs outside d
 	@$(PY) scripts/privacy_scan.py
 	@command -v gitleaks >/dev/null && gitleaks detect --no-banner -c .gitleaks.toml 2>/dev/null || echo "note: gitleaks not installed (CI runs it)"
 
+.PHONY: prove-vultr
+prove-vultr: ## Prove (from Vultr's own API) that we use Vultr: collections, live LLM+rerank, token delta
+	@if [ ! -f .env ]; then echo "error: create ./.env with your VULTR_INFERENCE_API_KEY"; exit 1; fi; \
+	set -a; . ./.env; set +a; \
+	if [ -f $(API_DIR)/pyproject.toml ] && command -v uv >/dev/null; then (cd $(API_DIR) && uv run python ../../scripts/prove_vultr.py); \
+	else $(PY) scripts/prove_vultr.py; fi
+
 .PHONY: seed
 seed: ## Generate the synthetic corpus + demo cases (renders real page images via Pillow in the venv)
 	@if [ ! -f scripts/generate_synthetic_data.py ]; then echo "skip seed: not present yet"; \

@@ -324,6 +324,14 @@ ids are confirmed against `GET /v1/models`: **`moonshotai/Kimi-K2.6`** (LLM) and
 retriever family; retrieval uses one Vector Store collection per `rule_type` (`csohss` / `cslut` /
 `cspoor` / `csstim`).
 
+**Prove it's really on Vultr** (the dashboard hides Serverless-Inference usage under its own tab):
+
+```bash
+make prove-vultr     # queries Vultr's own API: lists the Vector Store collections, runs a live
+                     # rerank (real Vultron scores) + a live Kimi call, and shows the account's
+                     # token counter move — screenshot-ready proof, straight from Vultr.
+```
+
 ### Poke the API directly
 
 ```bash
