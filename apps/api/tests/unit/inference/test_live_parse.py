@@ -2,14 +2,12 @@
 
 from __future__ import annotations
 
-from cyclesentinel.enums import RuleType
 from cyclesentinel.inference.live import (
+    _first_article,
     _parse_arguments,
     _to_chat_response,
-    _WireRetrievalItem,
-    _WireRetrievalResponse,
+    _WireSearchResponse,
 )
-from cyclesentinel.schemas import RetrievalHit
 
 
 def test_parse_chat_response_with_tool_calls() -> None:
@@ -61,39 +59,20 @@ def test_parse_arguments_tolerates_bad_json() -> None:
     assert _parse_arguments('{"k": 1}') == {"k": 1}
 
 
-def test_retrieval_item_prefers_text_then_content_then_chunk() -> None:
-    assert _WireRetrievalItem(text="a", content="b", chunk="c").page_text() == "a"
-    assert _WireRetrievalItem(content="b", chunk="c").page_text() == "b"
-    assert _WireRetrievalItem(chunk="c").page_text() == "c"
-    assert _WireRetrievalItem().page_text() == ""
+def test_search_response_parses_results_content() -> None:
+    # Real Vultr shape: {"results": [{"id", "content"}]} — no score, no metadata.
+    wire = _WireSearchResponse.model_validate(
+        {"results": [{"id": "x", "content": "§4.2 OHSS escalation guidance"}]}
+    )
+    assert len(wire.results) == 1
+    assert wire.results[0].content == "§4.2 OHSS escalation guidance"
 
 
-def test_retrieval_response_maps_metadata_to_hit() -> None:
-    wire = _WireRetrievalResponse.model_validate(
-        {
-            "items": [
-                {
-                    "text": "OHSS coasting guidance",
-                    "score": 0.87,
-                    "metadata": {
-                        "doc_id": "ohss-sop",
-                        "page": "12",
-                        "article": "§4.2",
-                        "rule_type": "ohss",
-                    },
-                }
-            ]
-        }
-    )
-    item = wire.items[0]
-    hit = RetrievalHit(
-        doc_id="ohss-sop",
-        rule_type=RuleType.OHSS,
-        page=12,
-        score=item.score,
-        text=item.page_text(),
-        article="§4.2",
-    )
-    assert hit.page == 12
-    assert hit.text == "OHSS coasting guidance"
-    assert hit.score == 0.87
+def test_search_response_empty_when_no_results() -> None:
+    assert _WireSearchResponse.model_validate({}).results == []
+
+
+def test_first_article_extracts_section_label() -> None:
+    assert _first_article("§4.2 OHSS escalation and management\n...") == "§4.2"
+    assert _first_article("§ 2.3 Cycle-day thresholds") == "§2.3"
+    assert _first_article("no article here") == ""

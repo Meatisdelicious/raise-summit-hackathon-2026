@@ -9,9 +9,9 @@ then raises :class:`AgentAmbiguousError` -> ``AMBIGUOUS_REQUIRES_REVIEW``.
 
 from __future__ import annotations
 
-import json
 from collections.abc import Sequence
 
+from cyclesentinel.agent.jsonio import extract_json_object
 from cyclesentinel.agent.limits import AgentAmbiguousError, RetryPolicy
 from cyclesentinel.agent.prompts import brief_messages, run_query
 from cyclesentinel.enums import DecisionState, EscalationLevel
@@ -23,14 +23,8 @@ from cyclesentinel.tools import ToolContext, get_tool
 
 def _parse_prose(resp: ChatResponse) -> tuple[str, str] | None:
     """Extract ``(interpretation, recommended_action)`` from the LLM response, or ``None``."""
-    content = resp.content
-    if not content:
-        return None
-    try:
-        data: object = json.loads(content)
-    except json.JSONDecodeError:
-        return None
-    if not isinstance(data, dict):
+    data = extract_json_object(resp.content)
+    if data is None:
         return None
     interpretation = data.get("interpretation")
     action = data.get("recommended_action")

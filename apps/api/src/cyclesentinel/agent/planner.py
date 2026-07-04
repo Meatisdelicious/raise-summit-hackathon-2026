@@ -8,9 +8,9 @@ deterministic — so a malformed plan degrades the run to review rather than gue
 
 from __future__ import annotations
 
-import json
 from collections.abc import Sequence
 
+from cyclesentinel.agent.jsonio import extract_json_object
 from cyclesentinel.agent.limits import AgentAmbiguousError, RetryPolicy
 from cyclesentinel.agent.prompts import plan_messages, run_query
 from cyclesentinel.inference.base import ChatResponse, LLMClient
@@ -19,14 +19,8 @@ from cyclesentinel.schemas import HormoneResult, Patient
 
 def _parse_plan(resp: ChatResponse) -> list[str] | None:
     """Extract a non-empty ``list[str]`` plan from the LLM response, or ``None`` if malformed."""
-    content = resp.content
-    if not content:
-        return None
-    try:
-        data: object = json.loads(content)
-    except json.JSONDecodeError:
-        return None
-    if not isinstance(data, dict):
+    data = extract_json_object(resp.content)
+    if data is None:
         return None
     plan = data.get("plan")
     if not isinstance(plan, list):

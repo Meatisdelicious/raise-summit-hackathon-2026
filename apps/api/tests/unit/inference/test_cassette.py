@@ -22,14 +22,14 @@ def test_cassette_key_ignores_volatile_fields() -> None:
         "messages": [{"role": "user", "content": "hi"}],
         "run_id": "run-abc",
         "created_at": "2026-07-04T10:00:00Z",
-        "id": "550e8400-e29b-41d4-a716-446655440000",
+        "id": "550e8400-e29b-41d4-a716-4466554400ab",
     }
     assert cassette_key(base) == cassette_key(with_noise)
 
 
 def test_cassette_key_scrubs_uuid_and_timestamp_values() -> None:
-    a = {"trace": "550e8400-e29b-41d4-a716-446655440000", "at": "2026-07-04T10:00:00"}
-    b = {"trace": "ffffffff-e29b-41d4-a716-446655440000", "at": "1999-01-01T00:00:00"}
+    a = {"trace": "550e8400-e29b-41d4-a716-4466554400ab", "at": "2026-07-04T10:00:00"}
+    b = {"trace": "ffffffff-e29b-41d4-a716-4466554400ab", "at": "1999-01-01T00:00:00"}
     assert cassette_key(a) == cassette_key(b)
 
 

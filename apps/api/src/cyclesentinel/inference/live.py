@@ -20,6 +20,8 @@ construction: OpenAI-compatible request/response shapes, defensive typed parsing
 from __future__ import annotations
 
 import json
+import re
+from pathlib import Path
 
 import httpx
 from pydantic import BaseModel, Field
@@ -27,9 +29,14 @@ from pydantic import BaseModel, Field
 from cyclesentinel.config import Settings
 from cyclesentinel.enums import RuleType
 from cyclesentinel.inference.base import ChatMessage, ChatResponse, ToolCall, ToolSchema
+from cyclesentinel.retrieval.collections import collection_id
+from cyclesentinel.retrieval.corpus import load_corpus
 from cyclesentinel.schemas import RetrievalHit
 
 _TIMEOUT = httpx.Timeout(60.0, connect=10.0)
+# live.py -> inference -> cyclesentinel -> src -> api -> apps -> repo root (parents[5]).
+_CORPUS_DIR = Path(__file__).resolve().parents[5] / "data" / "synthetic" / "corpus"
+_ARTICLE_RE = re.compile(r"§\s*[\d.]+")
 
 
 # --- Wire DTOs: OpenAI-compatible chat-completions response ------------------------------------
@@ -102,6 +109,10 @@ class VultrLLMClient:
         if tools:
             payload["tools"] = [t.to_wire() for t in tools]
             payload["tool_choice"] = "auto"
+        else:
+            # Both LLM turns (plan, brief) expect a JSON object; force it so the model can't drift
+            # into markdown/prose. Not part of the cassette key, so replay is unaffected.
+            payload["response_format"] = {"type": "json_object"}
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
@@ -115,88 +126,67 @@ class VultrLLMClient:
         return _to_chat_response(body)
 
 
-# --- Wire DTOs: retrieval-only vector-store search ---------------------------------------------
+# --- Vultr Vector Store search --------------------------------------------------------------
+# Real API (confirmed against /v1/vector_store): POST /vector_store/{id}/search with {"input",
+# "top_k"} returns {"results":[{"content"}]} — no server-side filter, no per-item metadata, no
+# score. So the branch queries the one collection for its rule_type (see retrieval/collections.py)
+# and we recover each hit's citation by matching the returned page text back to the local corpus.
 
 
-class _WireRetrievalItem(BaseModel):
-    """One scored item from the vector-store search response.
-
-    Field names are mapped defensively: the page text may arrive as ``text``/``content``/``chunk``,
-    and page/article/doc_id/rule_type live in an item ``metadata`` object we control at index time.
-    """
-
-    text: str | None = None
-    content: str | None = None
-    chunk: str | None = None
-    score: float = 0.0
-    metadata: dict[str, object] = Field(default_factory=dict)
-
-    def page_text(self) -> str:
-        """Best-available page text layer (what the text-only LLM reads to cite the article)."""
-        return self.text or self.content or self.chunk or ""
+class _WireSearchResult(BaseModel):
+    content: str = ""
 
 
-class _WireRetrievalResponse(BaseModel):
-    items: list[_WireRetrievalItem] = Field(default_factory=list)
+class _WireSearchResponse(BaseModel):
+    results: list[_WireSearchResult] = Field(default_factory=list)
 
 
-def _meta_str(meta: dict[str, object], key: str, default: str = "") -> str:
-    value = meta.get(key)
-    return value if isinstance(value, str) else default
-
-
-def _meta_int(meta: dict[str, object], key: str, default: int = 0) -> int:
-    value = meta.get(key)
-    if isinstance(value, bool):  # bool is an int subclass — reject it explicitly
-        return default
-    if isinstance(value, int):
-        return value
-    if isinstance(value, str) and value.isdigit():
-        return int(value)
-    return default
+def _first_article(text: str) -> str:
+    """Best-effort article label from a page's text (fallback when corpus match fails)."""
+    match = _ARTICLE_RE.search(text)
+    return match.group(0).replace(" ", "") if match else ""
 
 
 class VultrPrimeRetriever:
-    """Vultron Prime-8B visual document retrieval over the Vultr Vector Store (retrieval-only)."""
+    """Conditional retrieval over the Vultr Vector Store (one collection per ``rule_type``).
+
+    Retrieval-only: returns pages; generation stays in :class:`VultrLLMClient` (we never call
+    ``/chat/completions/RAG``). The store has no filter/metadata, so the branch searches exactly the
+    ``rule_type`` collection and citations are recovered by matching returned text to the corpus.
+    """
 
     def __init__(self, settings: Settings) -> None:
         self._base_url = settings.vultr_inference_base_url.rstrip("/")
         self._api_key = settings.vultr_inference_api_key
-        self._model = settings.cs_retriever_model
-        self._collection = settings.vultr_vector_collection
+        self._prefix = settings.vultr_vector_collection or "cs"
+        corpus = load_corpus(_CORPUS_DIR)
+        self._by_text = {page.text.strip(): page for page in corpus.pages}
 
     async def retrieve(self, query: str, rule_type: RuleType, top_k: int) -> list[RetrievalHit]:
-        """Search the collection for ``query``, filtered to ``rule_type``, and return scored pages.
-
-        Retrieval-only: this returns pages + scores; generation stays in :class:`VultrLLMClient`. We
-        never call ``/chat/completions/RAG`` (which would fuse retrieval and generation).
-        """
-        payload: dict[str, object] = {
-            "model": self._model,
-            "query": query,
-            "top_k": top_k,
-            "filter": {"rule_type": str(rule_type)},
-        }
+        """Search the ``rule_type`` collection for ``query`` and return the top-k pages as hits."""
+        collection = collection_id(self._prefix, rule_type)
+        payload: dict[str, object] = {"input": query, "top_k": top_k}
         headers = {
             "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
         }
-        url = f"{self._base_url}/vector_store/{self._collection}/search"
+        url = f"{self._base_url}/vector_store/{collection}/search"
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
             resp = await client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             body: object = resp.json()
-        wire = _WireRetrievalResponse.model_validate(body)
-        hits = [
-            RetrievalHit(
-                doc_id=_meta_str(item.metadata, "doc_id"),
-                rule_type=rule_type,
-                page=_meta_int(item.metadata, "page"),
-                score=item.score,
-                text=item.page_text(),
-                article=_meta_str(item.metadata, "article"),
+        wire = _WireSearchResponse.model_validate(body)
+        hits: list[RetrievalHit] = []
+        for rank, result in enumerate(wire.results[:top_k]):
+            page = self._by_text.get(result.content.strip())
+            hits.append(
+                RetrievalHit(
+                    doc_id=page.doc_id if page else "",
+                    rule_type=rule_type,
+                    page=page.page if page else 0,
+                    score=round(1.0 - 0.05 * rank, 3),  # rank proxy — the API returns no score
+                    text=result.content,
+                    article=page.article if page else _first_article(result.content),
+                )
             )
-            for item in wire.items
-            if _meta_str(item.metadata, "rule_type", str(rule_type)) == str(rule_type)
-        ]
-        return hits[:top_k]
+        return hits

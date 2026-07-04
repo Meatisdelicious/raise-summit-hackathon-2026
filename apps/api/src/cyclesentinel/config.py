@@ -34,15 +34,18 @@ class Settings(BaseSettings):
     # --- Inference mode: live | replay | stub (tests use replay; the demo uses live) ---
     inference_mode: InferenceMode = Field(default="replay", validation_alias="CS_INFERENCE_MODE")
 
-    # --- Vultr Serverless Inference (OpenAI-compatible) ---
+    # --- Vultr Serverless Inference (OpenAI-compatible); ids confirmed via GET /v1/models ---
+    # NB: the model id is part of the replay cassette key, so the DEFAULT stays empty (what the
+    # offline cassettes were keyed with). Live mode sets CS_LLM_MODEL=moonshotai/Kimi-K2.6 in .env.
     vultr_inference_api_key: str = ""
     vultr_inference_base_url: str = "https://api.vultrinference.com/v1"
     cs_llm_model: str = ""
-    cs_retriever_model: str = "vultr/VultronRetrieverPrime-Qwen3.5-8B"
+    cs_retriever_model: str = "vultr/VultronRetrieverPrime-Qwen3.5-8B"  # ReRank model (optional)
 
-    # --- Protocol/SOP corpus store (Prime-8B page embeddings), EU region ---
+    # --- Protocol/SOP corpus store, EU region. `vultr_vector_collection` is a short PREFIX; the
+    # per-rule_type collection id comes from retrieval.collections.collection_id (e.g. cs+ohss). ---
     vector_store: VectorStore = Field(default="local", validation_alias="VECTOR_STORE")
-    vultr_vector_collection: str = ""
+    vultr_vector_collection: str = "cs"
 
     # --- App data (+ pgvector fallback). SQLite default => zero infra for tests/dev ---
     database_url: str = "sqlite+pysqlite:///./cyclesentinel.db"
