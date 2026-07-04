@@ -287,33 +287,50 @@ raise-summit-hackathon-2026/
 ## 🚀 Getting started
 
 ```bash
-make install        # backend deps (uv, Python 3.12) + frontend deps (npm)
-make verify         # lint + mypy --strict + tests (replay) + privacy  → the pre-commit gate
-make stack          # backend (replay, offline) + the React UI → http://localhost:5173
-make demo-stack     # THE LIVE DEMO: backend on Vultr (Kimi K2.6 + Vultron) + the UI, one command
+make install        # backend deps (uv + Python 3.12) + frontend deps (npm)
+make stack          # ▶ run the whole app OFFLINE: backend (replay) + the UI → http://localhost:5173
 ```
 
-`make stack` runs everything offline (deterministic cassettes, no keys). `make demo-stack` runs the
-**real** thing — the UI drives the live agent on Vultr and the trace streams in as the models think.
-Both open the app at **http://localhost:5173**.
+`make stack` needs **no keys** — it streams deterministic demo runs from recorded cassettes. For the
+**real** agent on Vultr, see [Live demo](#-live-demo-on-vultr) below. Both open the app at
+**http://localhost:5173**.
 
-Hit it:
+### Commands
+
+| Command | What it does |
+|---|---|
+| `make install` | Install backend (uv, Python 3.12) **and** frontend (npm) dependencies |
+| `make stack` | **Offline demo** — backend in replay + the React UI (`:5173`); no keys, deterministic |
+| `make demo-stack` | **Live demo** — backend on Vultr (Kimi K2.6 + Vultron) + the UI, one command |
+| `make verify` | The pre-commit gate: `ruff` + `mypy --strict` + tests (replay) + privacy scan |
+| `make dev` | Backend **only**, replay mode → `:8000` |
+| `make demo` | Backend **only**, live on Vultr → `:8000` |
+| `make web` | Frontend **only** → `:5173` (proxies `/api` to the backend) |
+| `make seed` | Regenerate the synthetic corpus + 4 demo cases (renders page images) |
+| `make help` | List every target |
+
+Backend-only sub-gates (all run by `make verify`): `make lint` · `make typecheck` · `make test` · `make privacy`.
+
+### 🔴 Live demo on Vultr
+
+```bash
+cp .env.example .env               # add your VULTR_INFERENCE_API_KEY (model ids are pre-filled)
+python scripts/index_corpus.py     # one-time: build the per-rule_type Vector Store collections
+make demo-stack                    # ▶ live backend on Vultr + the UI → http://localhost:5173
+```
+
+The UI drives the real agent and the trace **streams in live** as the models think (~30 s/run). Model
+ids are confirmed against `GET /v1/models`: **`moonshotai/Kimi-K2.6`** (LLM) and the **Vultron**
+retriever family; retrieval uses one Vector Store collection per `rule_type` (`csohss` / `cslut` /
+`cspoor` / `csstim`).
+
+### Poke the API directly
 
 ```bash
 curl -s localhost:8000/api/patients                       # the 4 demo patients
 curl -s -X POST localhost:8000/api/patients/pat-K/runs    # → { "run_id": "..." }
 curl -N  localhost:8000/api/runs/<run_id>/events          # the live SSE agent trace
 ```
-
-### Going live on Vultr
-
-```bash
-cp .env.example .env               # fill VULTR_INFERENCE_API_KEY (ids already set: Kimi K2.6, cs prefix)
-python scripts/index_corpus.py     # build the per-rule_type Vector Store collections
-make demo-stack                    # LIVE backend on Vultr + the UI (or `make demo` for the API alone)
-```
-
-Model ids are confirmed against `GET /v1/models`: **`moonshotai/Kimi-K2.6`** (LLM) and the **Vultron** retriever family. Retrieval uses one Vector Store collection per `rule_type` (`csohss` / `cslut` / `cspoor` / `csstim`).
 
 ---
 
