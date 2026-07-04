@@ -1,0 +1,4 @@
+{
+  "content": "{\"plan\": [\"Rebuild Patient M's trajectory.\", \"Check the monitoring cadence against the expected 48h interval.\", \"The day-7 draw is absent (gap day 5 -> day 8) -> flag a missing timepoint.\", \"Request the delayed draw before adjusting the plan.\"]}",
+  "tool_calls": []
+}

@@ -42,8 +42,10 @@ privacy: ## Privacy scan — no real hormone data / identifiers / PDFs outside d
 	@command -v gitleaks >/dev/null && gitleaks detect --no-banner -c .gitleaks.toml 2>/dev/null || echo "note: gitleaks not installed (CI runs it)"
 
 .PHONY: seed
-seed: ## Generate the synthetic corpus + demo cases
-	@if [ -f scripts/generate_synthetic_data.py ]; then $(PY) scripts/generate_synthetic_data.py; else echo "skip seed: not present yet"; fi
+seed: ## Generate the synthetic corpus + demo cases (renders real page images via Pillow in the venv)
+	@if [ ! -f scripts/generate_synthetic_data.py ]; then echo "skip seed: not present yet"; \
+	elif [ -f $(API_DIR)/pyproject.toml ] && command -v uv >/dev/null; then (cd $(API_DIR) && uv run python ../../scripts/generate_synthetic_data.py); \
+	else $(PY) scripts/generate_synthetic_data.py; fi
 
 .PHONY: dev
 dev: ## Run the backend API (uvicorn) in replay mode

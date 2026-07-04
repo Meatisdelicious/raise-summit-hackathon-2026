@@ -1,0 +1,38 @@
+[
+  {
+    "id": "pat-K",
+    "label": "Patient K",
+    "protocol": "antagonist",
+    "cycle_day": 8,
+    "amh": 5.8,
+    "antral_follicle_count": 24,
+    "pcos_flag": true
+  },
+  {
+    "id": "pat-R",
+    "label": "Patient R",
+    "protocol": "antagonist",
+    "cycle_day": 8,
+    "amh": 2.1,
+    "antral_follicle_count": 12,
+    "pcos_flag": false
+  },
+  {
+    "id": "pat-P",
+    "label": "Patient P",
+    "protocol": "antagonist",
+    "cycle_day": 8,
+    "amh": 0.6,
+    "antral_follicle_count": 5,
+    "pcos_flag": false
+  },
+  {
+    "id": "pat-M",
+    "label": "Patient M",
+    "protocol": "antagonist",
+    "cycle_day": 8,
+    "amh": 2.4,
+    "antral_follicle_count": 14,
+    "pcos_flag": false
+  }
+]

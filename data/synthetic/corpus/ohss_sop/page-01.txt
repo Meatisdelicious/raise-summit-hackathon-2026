@@ -1,0 +1,2 @@
+SYNTHETIC — Ovarian Hyperstimulation Syndrome (OHSS) Prevention SOP
+Cycle Sentinel demo corpus. Internal triage support only. Invented thresholds.

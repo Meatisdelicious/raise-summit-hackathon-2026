@@ -1,0 +1,4 @@
+{
+  "content": "{\"plan\": [\"Rebuild Patient P's trajectory.\", \"Compute the signals and compare day-8 E2 to the expected curve.\", \"Day-8 E2 is far below the expected curve -> retrieve the poor-responder criteria.\", \"Recommend a dose/plan review and an info escalation.\"]}",
+  "tool_calls": []
+}

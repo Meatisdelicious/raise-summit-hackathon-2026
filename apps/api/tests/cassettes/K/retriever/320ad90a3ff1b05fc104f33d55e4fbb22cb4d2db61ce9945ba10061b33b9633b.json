@@ -1,0 +1,18 @@
+[
+  {
+    "article": "§4.2",
+    "doc_id": "ohss_sop",
+    "page": 4,
+    "rule_type": "ohss",
+    "score": 0.94,
+    "text": "§4.2 Escalation and management\nIf the OHSS composite tier is HIGH, withhold the standard trigger and consider coasting, a GnRH-agonist trigger swap, or a freeze-all strategy, and escalate to the biologist. Reduce the gonadotropin dose by 75 to 150 IU where continued stimulation is indicated.\n"
+  },
+  {
+    "article": "§3.1",
+    "doc_id": "ohss_sop",
+    "page": 3,
+    "rule_type": "ohss",
+    "score": 0.88,
+    "text": "§3.1 OHSS composite score\nScore one point each for estradiol >= 3000 pg/mL, >= 18 mature follicles, an estradiol rise >= 50% per day, and PCOS; a total >= 3 is a HIGH composite tier. A total of 2 is MODERATE; below 2 is LOW.\n"
+  }
+]

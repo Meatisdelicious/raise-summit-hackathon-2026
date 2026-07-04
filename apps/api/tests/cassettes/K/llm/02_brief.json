@@ -1,0 +1,4 @@
+{
+  "content": "{\"interpretation\": \"Across days 3-8 Patient K's estradiol accelerated from 210 to 4200 pg/mL (+61.5%/day into day 8) with 19 mature follicles and PCOS, driving a HIGH OHSS composite tier. Progesterone reached 1.6 ng/mL, at or above the 1.5 ng/mL day-8 threshold, indicating premature luteinization.\", \"recommended_action\": \"Withhold the standard trigger and escalate to the biologist: consider coasting, a GnRH-agonist trigger swap, or freeze-all per the OHSS SOP, and consider freeze-all for the elevated progesterone. Shorten monitoring to 24 hours.\"}",
+  "tool_calls": []
+}

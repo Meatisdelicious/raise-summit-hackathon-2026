@@ -1,0 +1,4 @@
+{
+  "content": "{\"plan\": [\"Rebuild Patient K's trajectory from her serial draws.\", \"Compute E2 rate-of-rise, E2 per follicle, OHSS composite, and progesterone-for-day.\", \"OHSS composite is HIGH -> retrieve the OHSS SOP escalation rule.\", \"Progesterone is elevated for day 8 -> retrieve the premature-luteinization rule.\", \"Set next-draw to 24h and draft a cited, escalated brief.\"]}",
+  "tool_calls": []
+}

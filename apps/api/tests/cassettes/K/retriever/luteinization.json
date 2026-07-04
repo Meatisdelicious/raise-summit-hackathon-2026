@@ -1,0 +1,18 @@
+[
+  {
+    "article": "§2.4",
+    "doc_id": "luteinization",
+    "page": 3,
+    "rule_type": "luteinization",
+    "score": 0.91,
+    "text": "§2.4 Action on elevated progesterone\nWhen serum progesterone exceeds the cycle-day threshold, consider a freeze-all strategy and escalate for biologist review before trigger.\n"
+  },
+  {
+    "article": "§2.3",
+    "doc_id": "luteinization",
+    "page": 2,
+    "rule_type": "luteinization",
+    "score": 0.85,
+    "text": "§2.3 Cycle-day-dependent progesterone thresholds\nProgesterone thresholds are cycle-day dependent: 1.0 ng/mL through day 6, 1.5 ng/mL on days 7-8, and 1.75 ng/mL from day 9. A value at or above the day threshold flags premature luteinization.\n"
+  }
+]

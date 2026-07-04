@@ -1,0 +1,54 @@
+{
+  "_note": "Cited numeric thresholds for the deterministic calculators, in the exact `Thresholds` TypedDict shape (cyclesentinel.calculators.Thresholds) the calculators consume. Loaded live via cyclesentinel.calculators.load_thresholds. Never hardcode these in code — read them here so every escalation grounds to a protocol/SOP article. Each block carries an optional `citation` (provenance only; ignored by the loader).",
+  "units": {
+    "e2": "pg/mL",
+    "progesterone": "ng/mL",
+    "e2_rate": "percent_per_day",
+    "interval": "hours"
+  },
+  "ohss": {
+    "e2_high": 3000.0,
+    "rate_pct_per_day_high": 50.0,
+    "mature_follicle_count_high": 18,
+    "pcos_threshold_multiplier": 0.9,
+    "citation": {
+      "doc_id": "ohss_sop",
+      "rule_type": "ohss",
+      "page": 3,
+      "article": "§3.1"
+    }
+  },
+  "luteinization": {
+    "progesterone_by_cycle_day": [
+      {
+        "max_cycle_day": 6,
+        "threshold": 1.0
+      },
+      {
+        "max_cycle_day": 8,
+        "threshold": 1.5
+      },
+      {
+        "max_cycle_day": 10,
+        "threshold": 1.75
+      }
+    ],
+    "default_threshold": 2.0,
+    "citation": {
+      "doc_id": "luteinization",
+      "rule_type": "luteinization",
+      "page": 2,
+      "article": "§2.3"
+    }
+  },
+  "poor_responder": {
+    "flat_rate_pct_per_day": 70.0,
+    "min_e2_on_trajectory": 500.0,
+    "citation": {
+      "doc_id": "poor_responder",
+      "rule_type": "poor_responder",
+      "page": 2,
+      "article": "§3.1"
+    }
+  }
+}

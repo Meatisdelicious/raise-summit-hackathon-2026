@@ -1,0 +1,233 @@
+{
+  "_note": "Ground truth per demo case. Tests assert calculator signals, DecisionState[], conditional-retrieval branches, citations and escalation against this. Keeping it here means ground truth lives in one place.",
+  "cases": {
+    "K": {
+      "patient_id": "pat-K",
+      "result_id": "res-K-d8",
+      "summary": "Steep E2 rise + PCOS -> OHSS composite HIGH; P4 borderline-high for day 8 -> premature luteinization. Dual flag, urgent.",
+      "computed_signals": [
+        {
+          "name": "e2_rate",
+          "value": 61.5,
+          "detail": "E2 +61.5%/day (2600 -> 4200 over 1 day)",
+          "tripped": true
+        },
+        {
+          "name": "e2_per_follicle",
+          "value": 221.1,
+          "detail": "E2 221 pg/mL per mature follicle (4200 / 19)",
+          "tripped": false
+        },
+        {
+          "name": "ohss_composite",
+          "value": "HIGH",
+          "detail": "score 4/4: E2>=3000, follicles>=18, rate>=50%/day, PCOS",
+          "tripped": true
+        },
+        {
+          "name": "progesterone_for_day",
+          "value": 1.6,
+          "detail": "P4 1.6 ng/mL >= 1.5 threshold for day 8",
+          "tripped": true
+        },
+        {
+          "name": "response_curve",
+          "value": 3.5,
+          "detail": "E2 4200 vs expected 1200 (ratio 3.5) — not a poor response",
+          "tripped": false
+        }
+      ],
+      "expected_states": [
+        "OHSS_RISK_ESCALATE",
+        "PREMATURE_LUTEINIZATION_FLAG"
+      ],
+      "retrieve_rule_branches": [
+        "ohss",
+        "luteinization"
+      ],
+      "expected_citations": [
+        {
+          "doc_id": "ohss_sop",
+          "rule_type": "ohss",
+          "page": 4,
+          "article": "§4.2"
+        },
+        {
+          "doc_id": "luteinization",
+          "rule_type": "luteinization",
+          "page": 3,
+          "article": "§2.4"
+        }
+      ],
+      "action": {
+        "name": "next_draw_timing",
+        "detail": "24h — accelerating E2"
+      },
+      "escalation_level": "urgent"
+    },
+    "R": {
+      "patient_id": "pat-R",
+      "result_id": "res-R-d8",
+      "summary": "Normal curve, normal P4, no PCOS. The CONTROL: computes but does NOT branch into conditional rule retrieval.",
+      "computed_signals": [
+        {
+          "name": "e2_rate",
+          "value": 37.8,
+          "detail": "E2 +37.8%/day (980 -> 1350 over 1 day)",
+          "tripped": false
+        },
+        {
+          "name": "e2_per_follicle",
+          "value": 168.8,
+          "detail": "E2 169 pg/mL per mature follicle (1350 / 8)",
+          "tripped": false
+        },
+        {
+          "name": "ohss_composite",
+          "value": "LOW",
+          "detail": "score 0/4",
+          "tripped": false
+        },
+        {
+          "name": "progesterone_for_day",
+          "value": 0.9,
+          "detail": "P4 0.9 ng/mL < 1.5 threshold for day 8",
+          "tripped": false
+        },
+        {
+          "name": "response_curve",
+          "value": 1.13,
+          "detail": "E2 1350 vs expected 1200 (ratio 1.13) — on curve",
+          "tripped": false
+        }
+      ],
+      "expected_states": [
+        "ROUTINE_CONTINUE"
+      ],
+      "retrieve_rule_branches": [],
+      "expected_citations": [
+        {
+          "doc_id": "stimulation",
+          "rule_type": "stimulation",
+          "page": 2,
+          "article": "§1.2"
+        }
+      ],
+      "action": {
+        "name": "next_draw_timing",
+        "detail": "48h — standard cadence"
+      },
+      "escalation_level": "none"
+    },
+    "P": {
+      "patient_id": "pat-P",
+      "result_id": "res-P-d8",
+      "summary": "Flat E2 vs expected curve -> poor response. Retrieves poor-responder criteria; dose/plan review; info escalation.",
+      "computed_signals": [
+        {
+          "name": "e2_rate",
+          "value": 18.8,
+          "detail": "E2 +18.8%/day (320 -> 380 over 1 day)",
+          "tripped": false
+        },
+        {
+          "name": "e2_per_follicle",
+          "value": 95.0,
+          "detail": "E2 95 pg/mL per mature follicle (380 / 4)",
+          "tripped": false
+        },
+        {
+          "name": "ohss_composite",
+          "value": "LOW",
+          "detail": "score 0/4",
+          "tripped": false
+        },
+        {
+          "name": "progesterone_for_day",
+          "value": 0.7,
+          "detail": "P4 0.7 ng/mL < 1.5 threshold for day 8",
+          "tripped": false
+        },
+        {
+          "name": "response_curve",
+          "value": 0.32,
+          "detail": "E2 380 vs expected 1200 (ratio 0.32 < 0.5) — poor response",
+          "tripped": true
+        }
+      ],
+      "expected_states": [
+        "POOR_RESPONSE_FLAG"
+      ],
+      "retrieve_rule_branches": [
+        "poor_responder"
+      ],
+      "expected_citations": [
+        {
+          "doc_id": "poor_responder",
+          "rule_type": "poor_responder",
+          "page": 3,
+          "article": "§3.2"
+        }
+      ],
+      "action": {
+        "name": "dose_adjustment",
+        "detail": "increase 75-150 IU — poor response"
+      },
+      "escalation_level": "info"
+    },
+    "M": {
+      "patient_id": "pat-M",
+      "result_id": "res-M-d8",
+      "summary": "Expected day-7 draw absent (gap day 5 -> day 8). Flags the gap, requests the missing draw. No conditional rule retrieval.",
+      "computed_signals": [
+        {
+          "name": "monitoring_gap",
+          "value": 3,
+          "detail": "3-day gap (day 5 -> day 8) exceeds the 48h monitoring cadence",
+          "tripped": true
+        },
+        {
+          "name": "e2_rate",
+          "value": 22.5,
+          "detail": "E2 +22.5%/day (430 -> 720 over 3 days) — computed over a wide gap",
+          "tripped": false
+        },
+        {
+          "name": "ohss_composite",
+          "value": "LOW",
+          "detail": "score 0/4",
+          "tripped": false
+        },
+        {
+          "name": "progesterone_for_day",
+          "value": 1.0,
+          "detail": "P4 1.0 ng/mL < 1.5 threshold for day 8",
+          "tripped": false
+        },
+        {
+          "name": "response_curve",
+          "value": 0.6,
+          "detail": "E2 720 vs expected 1200 (ratio 0.6) — on curve, not poor",
+          "tripped": false
+        }
+      ],
+      "expected_states": [
+        "MISSING_TIMEPOINT"
+      ],
+      "retrieve_rule_branches": [],
+      "expected_citations": [
+        {
+          "doc_id": "stimulation",
+          "rule_type": "stimulation",
+          "page": 2,
+          "article": "§1.2"
+        }
+      ],
+      "action": {
+        "name": "next_draw_timing",
+        "detail": "request the missing day-7 draw (24h)"
+      },
+      "escalation_level": "info"
+    }
+  }
+}
