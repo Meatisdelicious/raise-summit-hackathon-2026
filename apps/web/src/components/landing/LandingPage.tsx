@@ -2,156 +2,140 @@ import { Link } from "react-router-dom";
 import { Reveal } from "./Reveal";
 import "./landing.css";
 
-function Crescent({ className }: { className?: string }) {
+/* --- Small hand-rolled line icons (no icon dependency, keeps the warm/human register) --- */
+function IconHouse() {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" className={className} aria-hidden="true">
-      <path
-        d="M15.5 2.2a9.8 9.8 0 1 0 6.3 12.1A7.8 7.8 0 0 1 15.5 2.2Z"
-        fill="currentColor"
-      />
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 11 12 4l8 7" />
+      <path d="M6 10v9h12v-9" />
+      <path d="M12 19v-4a2 2 0 0 1 2-2" />
+    </svg>
+  );
+}
+function IconLeaf() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 19c0-8 6-13 14-13 0 8-5 14-13 14" />
+      <path d="M5 19c3-4 6-6 9-7" />
+    </svg>
+  );
+}
+function IconPeople() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
+      <path d="M16 5.5a3 3 0 0 1 0 5.8" />
+      <path d="M18 14.2c2 .9 3.5 2.9 3.5 5.3" />
+    </svg>
+  );
+}
+function IconFolder() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+    </svg>
+  );
+}
+function IconBook() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 5a2 2 0 0 1 2-2h5v16H6a2 2 0 0 0-2 2Z" />
+      <path d="M20 5a2 2 0 0 0-2-2h-5v16h5a2 2 0 0 1 2 2Z" />
+    </svg>
+  );
+}
+function IconChart() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 19h16" />
+      <path d="M5 15l4-5 3 3 5-7" />
+    </svg>
+  );
+}
+function IconCheck() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m5 12 4 4 10-10" />
+    </svg>
+  );
+}
+function IconDoc() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M7 3h7l4 4v14H7Z" />
+      <path d="M14 3v4h4" />
+      <path d="M10 12h5M10 16h5" />
+    </svg>
+  );
+}
+function IconSpark() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <path d="M8 8l2 2M14 14l2 2M16 8l-2 2M10 14l-2 2" />
+    </svg>
+  );
+}
+function IconInstagram() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17" cy="7" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+function IconLinkedIn() {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+      <path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5ZM3 9h4v12H3Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.75V21h-4v-5.3c0-1.26-.02-2.9-1.77-2.9s-2.04 1.38-2.04 2.8V21H10Z" />
     </svg>
   );
 }
 
-function HeroVisual() {
-  return (
-    <div className="ls-window" aria-hidden="true">
-      <div className="ls-window__bar">
-        <span className="ls-window__dot" />
-        <span className="ls-window__dot" />
-        <span className="ls-window__dot" />
-        <span className="ls-window__url">selene.app / app</span>
-      </div>
-      <div className="ls-hero__visual">
-      <svg viewBox="0 0 480 340" className="ls-hero__svg" role="img">
-        <defs>
-          <linearGradient id="ls-area" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#8e5b7a" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#8e5b7a" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-
-        {/* soft grid */}
-        <g stroke="#e6dcd4" strokeWidth="1">
-          <line x1="48" y1="60" x2="440" y2="60" />
-          <line x1="48" y1="130" x2="440" y2="130" />
-          <line x1="48" y1="200" x2="440" y2="200" />
-          <line x1="48" y1="270" x2="440" y2="270" />
-        </g>
-
-        {/* crescent, upper-left */}
-        <g transform="translate(70 66)">
-          <path
-            d="M18 -14a20 20 0 1 0 13 26A16 16 0 0 1 18 -14Z"
-            fill="#c9a24b"
-            opacity="0.85"
-          />
-        </g>
-
-        {/* estradiol area + curve */}
-        <path
-          d="M48 270 C 150 258, 210 232, 268 196 S 372 96, 440 66 L 440 270 Z"
-          fill="url(#ls-area)"
-        />
-        <path
-          d="M48 270 C 150 258, 210 232, 268 196 S 372 96, 440 66"
-          fill="none"
-          stroke="#8e5b7a"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
-
-        {/* progesterone, quiet secondary line */}
-        <path
-          d="M48 286 C 170 284, 300 280, 440 250"
-          fill="none"
-          stroke="#b89b72"
-          strokeWidth="2"
-          strokeDasharray="2 6"
-          strokeLinecap="round"
-        />
-
-        {/* flagged inflection point */}
-        <circle cx="372" cy="112" r="6.5" fill="#fbf8f4" stroke="#8e5b7a" strokeWidth="3" />
-        <line x1="372" y1="112" x2="372" y2="60" stroke="#8e5b7a" strokeWidth="1" strokeDasharray="3 3" />
-      </svg>
-
-      <div className="ls-hero__chip">
-        <span className="ls-hero__chip-dot" />
-        <div>
-          <strong>OHSS risk · escalated</strong>
-          <span>SOP §4.2 · cited · awaiting validation</span>
-        </div>
-      </div>
-      </div>
-    </div>
-  );
-}
-
-const risks = [
+const features = [
   {
-    title: "Ovarian hyperstimulation",
-    body: "A steep estradiol trajectory in a high responder can tip into OHSS. Caught on the curve — not the single value — management still has room: coasting, trigger modification, freeze-all.",
+    tint: "rose",
+    icon: <IconHouse />,
+    title: "Ancré dans le protocole",
+    body: "Chaque conclusion renvoie à un article de SOP numéroté, consultable en un clic.",
   },
   {
-    title: "Premature luteinization",
-    body: "A progesterone rise at the wrong cycle day quietly lowers fresh-transfer odds. The decision it forces is time-sensitive, and easy to miss on a busy panel.",
+    tint: "plum",
+    icon: <IconLeaf />,
+    title: "Le calcul décide, pas le modèle",
+    body: "Des calculateurs déterministes fixent le signal d'escalade — jamais un verdict autonome.",
   },
   {
-    title: "Poor response",
-    body: "A flat curve against the expected stimulation response, recognised too late, means a wasted cycle for a patient who may have few attempts left.",
+    tint: "sage",
+    icon: <IconPeople />,
+    title: "Le clinicien tranche",
+    body: "MILA prépare une escalade citée ; le biologiste valide avant toute action.",
   },
 ];
 
 const steps = [
   {
-    n: "01",
-    title: "Rebuild the trajectory",
-    body: "Prior serial results, protocol type, cycle day, and baseline reserve (AMH, antral follicle count, PCOS) — the whole cycle, not today's number in isolation.",
+    n: "1",
+    tint: "coral",
+    icon: <IconFolder />,
+    title: "Reconstruire",
+    body: "La trajectoire hormonale complète — pas la valeur du jour isolée.",
   },
   {
-    n: "02",
-    title: "Compute the signals",
-    body: "E2 rate-of-rise, estradiol per mature follicle, the OHSS composite, progesterone-for-cycle-day. Deterministic calculators — never a language model's guess.",
+    n: "2",
+    tint: "plum",
+    icon: <IconBook />,
+    title: "Calculer",
+    body: "Vitesse d'E2, composite OHSS, progestérone selon le jour du cycle.",
   },
   {
-    n: "03",
-    title: "Retrieve only what the math calls for",
-    body: "Which protocol article to pull is decided by what just computed. The OHSS SOP is never touched for a routine patient. This is why Selene is an agent, not a search.",
-    accent: true,
-  },
-  {
-    n: "04",
-    title: "A cited brief, escalated to validate",
-    body: "Every clause resolves to a numbered protocol article. A biologist approves, edits, or rejects before anything reaches the clinic. Selene drafts; the human decides.",
-  },
-];
-
-const states = [
-  "Routine — continue",
-  "OHSS risk",
-  "Premature luteinization",
-  "Poor response",
-  "Missing timepoint",
-  "Needs review",
-];
-
-const safety = [
-  {
-    title: "Deterministic where it matters",
-    body: "Calculators and protocol rules decide the escalation flag. The model interprets and writes prose — it never issues an autonomous clinical verdict.",
-  },
-  {
-    title: "Everything is cited",
-    body: "Each recommendation resolves to a numbered protocol / SOP article. No ungrounded advice ships, and every brief is auditable line by line.",
-  },
-  {
-    title: "Human validation, always",
-    body: "The output is professional decision support for the biologist and clinician — never patient-facing. No brief is auto-sent.",
-  },
-  {
-    title: "Sovereign by design",
-    body: "Serial hormone data is Article-9 sensitive. Inference and the protocol corpus stay in an EU region, HDS-aligned — the sovereign alternative to data leaving the EU.",
+    n: "3",
+    tint: "sage",
+    icon: <IconChart />,
+    title: "Escalader",
+    body: "La règle de protocole qui s'applique, citée, prête à valider.",
   },
 ];
 
@@ -160,156 +144,190 @@ export function LandingPage() {
     <div className="selene-landing">
       <header className="ls-nav">
         <a className="ls-nav__brand" href="#top">
-          <Crescent className="ls-nav__mark" />
-          Selene
+          MILA
         </a>
-        <nav className="ls-nav__links" aria-label="Primary">
-          <a href="#problem">The problem</a>
-          <a href="#how">How it works</a>
-          <a href="#safety">Safety</a>
+        <nav className="ls-nav__links" aria-label="Navigation principale">
+          <a href="#features">Le produit</a>
+          <a href="#how">Comment ça marche</a>
+          <a href="#safety">Sécurité</a>
+          <Link to="/app">Connexion</Link>
         </nav>
         <Link to="/app" className="ls-btn ls-btn--primary ls-nav__cta">
-          See it live
+          <IconSpark />
+          Voir la démo
         </Link>
       </header>
 
       <main id="top">
+        {/* --- Hero --- */}
         <section className="ls-hero">
+          <span className="ls-blob ls-blob--1" aria-hidden="true" />
           <Reveal className="ls-hero__copy">
-            <p className="ls-eyebrow">Clinical monitoring intelligence · IVF laboratories</p>
             <h1 className="ls-hero__title">
-              Every hormone value, read in the light of the whole cycle.
+              Une lecture plus sûre de chaque{" "}
+              <span className="ls-accent-text">cycle de stimulation</span>
             </h1>
             <p className="ls-hero__lede">
-              Selene sits between the assay and the clinician. For each new monitoring result in an
-              ovarian-stimulation cycle, it rebuilds the trajectory, computes the risk signals, and
-              surfaces the exact protocol rule that applies — as a cited, ready-to-validate
-              escalation brief.
+              MILA assiste le biologiste et le clinicien&nbsp;: à chaque nouveau dosage hormonal, il
+              reconstruit la trajectoire, calcule les signaux de risque et prépare une escalade
+              citée, prête à valider — en lien avec l'équipe médicale.
             </p>
             <div className="ls-hero__actions">
-              <Link to="/app" className="ls-btn ls-btn--primary">
-                See a live review
+              <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
+                Voir une revue en direct →
               </Link>
-              <a href="#how" className="ls-btn ls-btn--ghost">
-                How it reasons
+              <a href="#how" className="ls-btn ls-btn--ghost ls-btn--lg">
+                Découvrir la méthode
               </a>
             </div>
-            <p className="ls-hero__note">
-              For lab biologists &amp; PMA clinicians · never patient-facing
+            <p className="ls-hero__chips">
+              <span>Cité</span>
+              <span aria-hidden="true">·</span>
+              <span>Validé par un humain</span>
+              <span aria-hidden="true">·</span>
+              <span>Souverain (EU / HDS)</span>
             </p>
           </Reveal>
-          <Reveal>
-            <HeroVisual />
-          </Reveal>
-        </section>
 
-        <div className="ls-trustbar">
-          <span>Grounded in protocol</span>
-          <span>Human-validated</span>
-          <span>EU / HDS-aligned</span>
-          <span>Synthetic data only</span>
-        </div>
-
-        <section id="problem" className="ls-section">
-          <Reveal className="ls-section__head">
-            <p className="ls-eyebrow">The problem</p>
-            <h2 className="ls-h2">A mis-timed value doesn&rsquo;t announce itself.</h2>
-            <p className="ls-section__lede">
-              In serial hormonal monitoring, one late, missing, or mis-read draw cascades. The lab
-              delivers numbers; the intelligence to escalate the right one, in time, is left to a
-              human scanning a busy panel.
-            </p>
-          </Reveal>
-          <Reveal stagger>
-            <div className="ls-cards">
-              {risks.map((risk) => (
-                <article key={risk.title} className="ls-card">
-                  <span className="ls-card__rule" />
-                  <h3 className="ls-card__title">{risk.title}</h3>
-                  <p className="ls-card__body">{risk.body}</p>
-                </article>
-              ))}
-            </div>
-          </Reveal>
-        </section>
-
-        <section id="how" className="ls-section ls-section--dark">
-          <Reveal className="ls-section__head">
-            <p className="ls-eyebrow">How it works</p>
-            <h2 className="ls-h2">Not a lookup. A line of reasoning.</h2>
-            <p className="ls-section__lede">
-              The conditional retrievals can&rsquo;t be issued up front — which rule Selene needs is
-              unknown until the computation reveals the concern, and that computation is impossible
-              until the trajectory is rebuilt. The dependency graph forbids retrieve-then-answer.
-            </p>
-          </Reveal>
-          <Reveal stagger>
-            <ol className="ls-steps">
-              {steps.map((step) => (
-                <li key={step.n} className={`ls-step${step.accent ? " ls-step--accent" : ""}`}>
-                  <span className="ls-step__n">{step.n}</span>
-                  <div>
-                    <h3 className="ls-step__title">{step.title}</h3>
-                    <p className="ls-step__body">{step.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-          <Reveal className="ls-states">
-            <p className="ls-states__label">Every run resolves to one constrained outcome</p>
-            <div className="ls-states__chips">
-              {states.map((state) => (
-                <span key={state} className="ls-chip">
-                  {state}
+          <Reveal className="ls-hero__media">
+            <div className="ls-hero__photo" role="img" aria-label="Une biologiste échangeant avec une patiente" />
+            <div className="ls-hero__card" aria-hidden="true">
+              <div className="ls-card-row ls-card-row--head">
+                <span className="ls-card-ic ls-card-ic--plum">
+                  <IconSpark />
                 </span>
-              ))}
+                Revue de monitoring
+              </div>
+              <div className="ls-card-row">
+                <span className="ls-card-ic ls-card-ic--sage">
+                  <IconCheck />
+                </span>
+                <div>
+                  <strong>Trajectoire reconstruite</strong>
+                  <span>3 dosages · jour 8</span>
+                </div>
+              </div>
+              <div className="ls-card-row">
+                <span className="ls-card-ic ls-card-ic--rose">
+                  <IconDoc />
+                </span>
+                <div>
+                  <strong>Règle citée</strong>
+                  <span>OHSS · SOP §4.2</span>
+                </div>
+              </div>
+              <div className="ls-card-foot">
+                <span>En attente de validation</span>
+                <span className="ls-card-dot" />
+              </div>
             </div>
           </Reveal>
         </section>
 
-        <section id="safety" className="ls-section">
-          <Reveal className="ls-section__head">
-            <p className="ls-eyebrow">Safety &amp; sovereignty</p>
-            <h2 className="ls-h2">Decision support, with the clinician in the loop.</h2>
-          </Reveal>
+        {/* --- Feature trio --- */}
+        <section id="features" className="ls-features">
           <Reveal stagger>
-            <div className="ls-safety">
-              {safety.map((item) => (
-                <article key={item.title} className="ls-safety__item">
-                  <h3 className="ls-safety__title">{item.title}</h3>
-                  <p className="ls-safety__body">{item.body}</p>
+            <div className="ls-feature-grid">
+              {features.map((f) => (
+                <article key={f.title} className="ls-feature">
+                  <span className={`ls-feature__ic ls-feature__ic--${f.tint}`}>{f.icon}</span>
+                  <h3 className="ls-feature__title">{f.title}</h3>
+                  <p className="ls-feature__body">{f.body}</p>
                 </article>
               ))}
             </div>
           </Reveal>
         </section>
 
-        <section className="ls-cta">
+        {/* --- How it works --- */}
+        <section id="how" className="ls-how">
           <Reveal>
-            <Crescent className="ls-cta__mark" />
-            <h2 className="ls-cta__title">See Selene close the loop on a live cycle.</h2>
-            <p className="ls-cta__lede">
-              Watch it rebuild a trajectory, compute the risk, fetch the governing rule, and draft
-              the cited escalation — on a fully synthetic demo case.
+            <h2 className="ls-h2 ls-center">Comment MILA raisonne</h2>
+            <p className="ls-how__sub ls-center">
+              Un fil de raisonnement, pas une simple recherche.
             </p>
+          </Reveal>
+          <Reveal stagger>
+            <div className="ls-steps">
+              {steps.map((s) => (
+                <article key={s.n} className="ls-step">
+                  <span className={`ls-step__num ls-step__num--${s.tint}`}>{s.n}</span>
+                  <span className="ls-step__ic">{s.icon}</span>
+                  <h3 className="ls-step__title">{s.title}</h3>
+                  <p className="ls-step__body">{s.body}</p>
+                </article>
+              ))}
+            </div>
+          </Reveal>
+        </section>
+
+        {/* --- Testimonial --- */}
+        <section className="ls-quote-wrap">
+          <Reveal className="ls-quote">
+            <span className="ls-quote__mark" aria-hidden="true">
+              &ldquo;
+            </span>
+            <blockquote>
+              Avec MILA, la bonne règle arrive citée et au bon moment — je valide, je n'ai plus à
+              reconstruire chaque trajectoire à la main.
+            </blockquote>
+            <div className="ls-quote__by">
+              <span className="ls-quote__avatar" aria-hidden="true" />
+              <div>
+                <strong>Biologiste médical</strong>
+                <span>— témoignage fictif</span>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* --- Safety strip --- */}
+        <section id="safety" className="ls-safety-band">
+          <Reveal className="ls-safety-band__inner">
+            <p className="ls-eyebrow">Sécurité &amp; souveraineté</p>
+            <h2 className="ls-h2">Une aide à la décision, le clinicien dans la boucle.</h2>
+            <p className="ls-safety-band__lede">
+              Données de santé sérielles = données sensibles (Article&nbsp;9). L'inférence et le
+              corpus de protocoles restent dans une région EU, alignée HDS. Rien n'est envoyé sans
+              validation humaine, et jamais à la patiente.
+            </p>
+          </Reveal>
+        </section>
+
+        {/* --- CTA --- */}
+        <section className="ls-cta">
+          <span className="ls-blob ls-blob--2" aria-hidden="true" />
+          <span className="ls-blob ls-blob--3" aria-hidden="true" />
+          <Reveal className="ls-cta__inner">
+            <div>
+              <h2 className="ls-cta__title">Voir MILA fermer la boucle sur un cycle</h2>
+              <p className="ls-cta__lede">
+                Une approche plus lisible et plus sûre du monitoring de stimulation — sur un cas de
+                démonstration entièrement synthétique.
+              </p>
+            </div>
             <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
-              Open the live review
+              Ouvrir une revue →
             </Link>
           </Reveal>
         </section>
       </main>
 
       <footer className="ls-footer">
-        <div className="ls-footer__brand">
-          <Crescent className="ls-nav__mark" />
-          Selene
+        <span className="ls-footer__brand">MILA</span>
+        <nav className="ls-footer__links" aria-label="Liens de pied de page">
+          <a href="#safety">Confidentialité</a>
+          <a href="#top">Contact</a>
+          <a href="#safety">Mentions légales</a>
+        </nav>
+        <div className="ls-footer__social">
+          <a href="#top" aria-label="Instagram">
+            <IconInstagram />
+          </a>
+          <a href="#top" aria-label="LinkedIn">
+            <IconLinkedIn />
+          </a>
         </div>
-        <p className="ls-footer__disclaimer">
-          Selene is a professional decision-support prototype built for the RAISE Summit Hackathon
-          2026. Synthetic data only — not a medical device, and not a substitute for clinical
-          judgement.
-        </p>
       </footer>
     </div>
   );

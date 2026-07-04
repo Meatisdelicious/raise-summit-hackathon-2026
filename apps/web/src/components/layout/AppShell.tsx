@@ -21,7 +21,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-shell">
       <header className="app-shell__header">
         <Link to="/app" className="app-shell__brand">
-          Selene
+          MILA
         </Link>
         <span className="app-shell__subtitle">Internal monitoring &amp; escalation review</span>
         <button
