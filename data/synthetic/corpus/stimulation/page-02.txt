@@ -1,0 +1,3 @@
+§1.2 Monitoring cadence and next-draw timing
+Schedule monitoring draws no more than 48 hours apart; if a scheduled draw is missing, flag the gap and request the delayed draw before adjusting the plan. When estradiol accelerates, shorten the interval to 24 hours.
+The standard monitoring interval is 48 hours; a gap wider than one cadence step is treated as a missing timepoint and must be surfaced for review.

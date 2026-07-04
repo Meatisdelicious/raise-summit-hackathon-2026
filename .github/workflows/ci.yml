@@ -39,7 +39,7 @@ jobs:
           if [ -f apps/api/pyproject.toml ]; then echo "go=true" >> "$GITHUB_OUTPUT"; else echo "go=false" >> "$GITHUB_OUTPUT"; echo "apps/api not present yet — skipping"; fi
       - name: Install
         if: steps.guard.outputs.go == 'true'
-        run: pip install uv && (cd apps/api && uv sync || pip install -e '.[dev]')
+        run: pip install uv && (cd apps/api && uv sync --extra dev || pip install -e '.[dev]')
       - name: Lint + typecheck + test
         if: steps.guard.outputs.go == 'true'
         run: make lint typecheck test

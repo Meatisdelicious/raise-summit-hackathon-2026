@@ -1,0 +1,2 @@
+SYNTHETIC — Ovarian Stimulation Protocol (Antagonist Cycle)
+Cycle Sentinel demo corpus. For internal biologist decision-support only; not medical advice. All values are invented for the RAISE Summit hackathon.

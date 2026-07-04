@@ -1,0 +1,61 @@
+{
+  "_note": "Gonadotropin dose-adjustment ranges (IU) by computed situation. Read by lookup_dose_adjustment; deltas are advisory ranges a human validates.",
+  "units": {
+    "dose": "IU"
+  },
+  "gonadotropin_adjustments": [
+    {
+      "situation": "routine",
+      "action": "maintain",
+      "delta_iu_range": [
+        0,
+        0
+      ],
+      "citation": {
+        "doc_id": "stimulation",
+        "rule_type": "stimulation",
+        "page": 3,
+        "article": "§1.3"
+      }
+    },
+    {
+      "situation": "poor_response",
+      "action": "increase",
+      "delta_iu_range": [
+        75,
+        150
+      ],
+      "citation": {
+        "doc_id": "poor_responder",
+        "rule_type": "poor_responder",
+        "page": 3,
+        "article": "§3.2"
+      }
+    },
+    {
+      "situation": "ohss_risk",
+      "action": "reduce_or_coast",
+      "delta_iu_range": [
+        -150,
+        -75
+      ],
+      "citation": {
+        "doc_id": "ohss_sop",
+        "rule_type": "ohss",
+        "page": 4,
+        "article": "§4.2"
+      }
+    },
+    {
+      "situation": "premature_luteinization",
+      "action": "freeze_all_consider",
+      "delta_iu_range": null,
+      "citation": {
+        "doc_id": "luteinization",
+        "rule_type": "luteinization",
+        "page": 3,
+        "article": "§2.4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+SYNTHETIC — Poor Responder Management
+Cycle Sentinel demo corpus. Internal triage support only. Invented thresholds.

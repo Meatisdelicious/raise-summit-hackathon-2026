@@ -1,0 +1,2 @@
+SYNTHETIC — Premature Luteinization Monitoring Rule
+Cycle Sentinel demo corpus. Internal triage support only. Invented thresholds.

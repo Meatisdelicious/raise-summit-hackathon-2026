@@ -1,0 +1,18 @@
+[
+  {
+    "article": "§3.2",
+    "doc_id": "poor_responder",
+    "page": 3,
+    "rule_type": "poor_responder",
+    "score": 0.92,
+    "text": "§3.2 Dose and plan review\nFor a confirmed poor response, review the gonadotropin dose (increase by 75-150 IU) or reconsider the stimulation plan, and escalate for biologist review.\n"
+  },
+  {
+    "article": "§3.1",
+    "doc_id": "poor_responder",
+    "page": 2,
+    "rule_type": "poor_responder",
+    "score": 0.86,
+    "text": "§3.1 Poor-response criteria\nA poor response is defined as a day-8 estradiol below 50% of the expected curve (expected about 1200 pg/mL by day 8) in a patient with diminished ovarian reserve (low AMH or low antral follicle count).\n"
+  }
+]

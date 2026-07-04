@@ -46,3 +46,7 @@ test-results/
 .idea/
 .vscode/
 *.swp
+
+# local sqlite (dev/demo)
+*.db
+cyclesentinel.db

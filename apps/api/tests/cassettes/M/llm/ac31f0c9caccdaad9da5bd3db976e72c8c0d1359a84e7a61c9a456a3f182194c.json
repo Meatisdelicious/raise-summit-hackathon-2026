@@ -1,0 +1,4 @@
+{
+  "content": "{\"interpretation\": \"Patient M's monitoring has a 3-day gap between the day-5 and day-8 draws, wider than the 48-hour cadence, so the expected day-7 timepoint is missing. The available values are otherwise within expected bounds.\", \"recommended_action\": \"Flag the missing day-7 draw and request it before any plan change; resume the standard cadence once the gap is filled.\"}",
+  "tool_calls": []
+}

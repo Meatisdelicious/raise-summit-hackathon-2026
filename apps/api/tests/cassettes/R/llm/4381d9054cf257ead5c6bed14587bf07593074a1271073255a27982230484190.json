@@ -1,0 +1,4 @@
+{
+  "content": "{\"interpretation\": \"Patient R's estradiol follows the expected antagonist curve (140 -> 1350 pg/mL by day 8, +37.8%/day) with 8 mature follicles and progesterone 0.9 ng/mL, below the day-8 threshold. OHSS composite is LOW.\", \"recommended_action\": \"Continue the stimulation protocol unchanged; schedule the next monitoring draw at the standard 48-hour interval.\"}",
+  "tool_calls": []
+}

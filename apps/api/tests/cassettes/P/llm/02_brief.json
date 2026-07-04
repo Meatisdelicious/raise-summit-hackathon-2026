@@ -1,0 +1,4 @@
+{
+  "content": "{\"interpretation\": \"Patient P's estradiol is flat against the expected curve (380 vs ~1200 pg/mL by day 8, ratio 0.32) with low reserve (AMH 0.6, AFC 5) and only 4 mature follicles, meeting the poor-response criteria.\", \"recommended_action\": \"Escalate to the biologist for a dose and plan review: consider increasing gonadotropins by 75-150 IU or reconsidering the stimulation plan, per the poor-responder rule.\"}",
+  "tool_calls": []
+}

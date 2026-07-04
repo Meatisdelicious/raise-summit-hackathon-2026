@@ -1,0 +1,4 @@
+{
+  "content": "{\"plan\": [\"Rebuild Patient R's trajectory.\", \"Compute E2 rate, E2 per follicle, OHSS composite, and progesterone-for-day.\", \"All signals are within expected bounds -- no conditional rule retrieval needed.\", \"Confirm routine continuation with a standard 48h next draw.\"]}",
+  "tool_calls": []
+}
