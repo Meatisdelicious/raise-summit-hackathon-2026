@@ -82,20 +82,20 @@ const features = [
   {
     tint: "rose",
     icon: <IconHouse />,
-    title: "Ancré dans le protocole",
-    body: "Chaque conclusion renvoie à un article de SOP numéroté, consultable en un clic.",
+    title: "Grounded in the protocol",
+    body: "Every conclusion points to a numbered SOP article, viewable in one click.",
   },
   {
     tint: "plum",
     icon: <IconLeaf />,
-    title: "Le calcul décide, pas le modèle",
-    body: "Des calculateurs déterministes fixent le signal d'escalade. Le modèle ne rend jamais de verdict autonome.",
+    title: "The math decides, not the model",
+    body: "Deterministic calculators set the escalation signal. The model never issues a verdict on its own.",
   },
   {
     tint: "sage",
     icon: <IconPeople />,
-    title: "Le clinicien tranche",
-    body: "MILA prépare une escalade citée ; le biologiste valide avant toute action.",
+    title: "The clinician has the final say",
+    body: "MILA prepares a cited escalation; the biologist validates before any action.",
   },
 ];
 
@@ -104,22 +104,22 @@ const steps = [
     n: "1",
     tint: "coral",
     icon: <IconFolder />,
-    title: "Reconstruire",
-    body: "La trajectoire hormonale complète, jamais la valeur du jour isolée.",
+    title: "Rebuild",
+    body: "The full hormonal trajectory, never the day's value in isolation.",
   },
   {
     n: "2",
     tint: "plum",
     icon: <IconBook />,
-    title: "Calculer",
-    body: "Vitesse d'E2, composite OHSS, progestérone selon le jour du cycle.",
+    title: "Compute",
+    body: "E2 velocity, OHSS composite, progesterone by cycle day.",
   },
   {
     n: "3",
     tint: "sage",
     icon: <IconChart />,
-    title: "Escalader",
-    body: "La règle de protocole qui s'applique, citée, prête à valider.",
+    title: "Escalate",
+    body: "The protocol rule that applies, cited, ready to validate.",
   },
 ];
 
@@ -130,15 +130,15 @@ export function LandingPage() {
         <a className="ls-nav__brand" href="#top">
           MILA
         </a>
-        <nav className="ls-nav__links" aria-label="Navigation principale">
-          <a href="#features">Le produit</a>
-          <a href="#how">Comment ça marche</a>
-          <a href="#safety">Sécurité</a>
-          <Link to="/app">Connexion</Link>
+        <nav className="ls-nav__links" aria-label="Main navigation">
+          <a href="#features">Product</a>
+          <a href="#how">How it works</a>
+          <a href="#safety">Safety</a>
+          <Link to="/app">Sign in</Link>
         </nav>
         <Link to="/app" className="ls-btn ls-btn--primary ls-nav__cta">
           <IconSpark />
-          Voir la démo
+          View the demo
         </Link>
       </header>
 
@@ -148,28 +148,28 @@ export function LandingPage() {
           <span className="ls-blob ls-blob--1" aria-hidden="true" />
           <Reveal className="ls-hero__copy">
             <h1 className="ls-hero__title">
-              Une lecture plus sûre de chaque{" "}
-              <span className="ls-accent-text">cycle de stimulation</span>
+              A safer read on every{" "}
+              <span className="ls-accent-text">stimulation cycle</span>
             </h1>
             <p className="ls-hero__lede">
-              MILA assiste le biologiste et le clinicien&nbsp;: à chaque nouveau dosage hormonal, il
-              reconstruit la trajectoire, calcule les signaux de risque et prépare une escalade
-              citée, prête à valider en lien avec l'équipe médicale.
+              MILA assists the biologist and the clinician: with every new hormone result, it
+              rebuilds the trajectory, computes the risk signals and prepares a cited escalation,
+              ready to validate with the medical team.
             </p>
             <div className="ls-hero__actions">
               <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
-                Voir une revue en direct →
+                Watch a live review →
               </Link>
               <a href="#how" className="ls-btn ls-btn--ghost ls-btn--lg">
-                Découvrir la méthode
+                Explore the method
               </a>
             </div>
             <p className="ls-hero__chips">
-              <span>Cité</span>
+              <span>Cited</span>
               <span aria-hidden="true">·</span>
-              <span>Validé par un humain</span>
+              <span>Human-validated</span>
               <span aria-hidden="true">·</span>
-              <span>Souverain (EU / HDS)</span>
+              <span>Sovereign (EU / HDS)</span>
             </p>
           </Reveal>
 
@@ -177,7 +177,7 @@ export function LandingPage() {
             <img
               className="ls-hero__photo"
               src="/frontpage.png"
-              alt="Une biologiste échangeant avec une patiente"
+              alt="A biologist talking with a patient"
               width="461"
               height="405"
             />
@@ -202,9 +202,9 @@ export function LandingPage() {
         {/* --- How it works --- */}
         <section id="how" className="ls-how">
           <Reveal>
-            <h2 className="ls-h2 ls-center">Comment MILA raisonne</h2>
+            <h2 className="ls-h2 ls-center">How MILA reasons</h2>
             <p className="ls-how__sub ls-center">
-              Un fil de raisonnement, pas une simple recherche.
+              A thread of reasoning, not a simple lookup.
             </p>
           </Reveal>
           <Reveal stagger>
@@ -228,14 +228,14 @@ export function LandingPage() {
               &ldquo;
             </span>
             <blockquote>
-              Avec MILA, la bonne règle arrive citée au bon moment. Je valide et je n'ai plus à
-              reconstruire chaque trajectoire à la main.
+              With MILA, the right rule arrives cited at the right moment. I validate, and I no
+              longer have to rebuild every trajectory by hand.
             </blockquote>
             <div className="ls-quote__by">
               <span className="ls-quote__avatar" aria-hidden="true" />
               <div>
-                <strong>Biologiste médical</strong>
-                <span>Témoignage fictif</span>
+                <strong>Medical biologist</strong>
+                <span>Fictional testimonial</span>
               </div>
             </div>
           </Reveal>
@@ -244,12 +244,12 @@ export function LandingPage() {
         {/* --- Safety strip --- */}
         <section id="safety" className="ls-safety-band">
           <Reveal className="ls-safety-band__inner">
-            <p className="ls-eyebrow">Sécurité &amp; souveraineté</p>
-            <h2 className="ls-h2">Une aide à la décision, le clinicien dans la boucle.</h2>
+            <p className="ls-eyebrow">Safety &amp; sovereignty</p>
+            <h2 className="ls-h2">Decision support, with the clinician in the loop.</h2>
             <p className="ls-safety-band__lede">
-              Données de santé sérielles = données sensibles (Article&nbsp;9). L'inférence et le
-              corpus de protocoles restent dans une région EU, alignée HDS. Rien n'est envoyé sans
-              validation humaine, et jamais à la patiente.
+              Serial health data = sensitive data (Article&nbsp;9). Inference and the protocol
+              corpus stay in an EU region, HDS-aligned. Nothing is sent without human validation,
+              and never to the patient.
             </p>
           </Reveal>
         </section>
@@ -260,14 +260,14 @@ export function LandingPage() {
           <span className="ls-blob ls-blob--3" aria-hidden="true" />
           <Reveal className="ls-cta__inner">
             <div>
-              <h2 className="ls-cta__title">Voir MILA fermer la boucle sur un cycle</h2>
+              <h2 className="ls-cta__title">See MILA close the loop on a cycle</h2>
               <p className="ls-cta__lede">
-                Une approche plus lisible et plus sûre du monitoring de stimulation, présentée sur un cas de
-                démonstration entièrement synthétique.
+                A clearer, safer approach to stimulation monitoring, shown on a fully synthetic
+                demo case.
               </p>
             </div>
             <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
-              Ouvrir une revue →
+              Open a review →
             </Link>
           </Reveal>
         </section>
@@ -275,10 +275,10 @@ export function LandingPage() {
 
       <footer className="ls-footer">
         <span className="ls-footer__brand">MILA</span>
-        <nav className="ls-footer__links" aria-label="Liens de pied de page">
-          <a href="#safety">Confidentialité</a>
+        <nav className="ls-footer__links" aria-label="Footer links">
+          <a href="#safety">Privacy</a>
           <a href="#top">Contact</a>
-          <a href="#safety">Mentions légales</a>
+          <a href="#safety">Legal</a>
         </nav>
         <div className="ls-footer__social">
           <a href="#top" aria-label="Instagram">
