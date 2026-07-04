@@ -3,7 +3,7 @@ import type { RunStatus } from "../../hooks/useAgentRun";
 const statusText: Record<RunStatus, string> = {
   idle: "",
   starting: "Starting the monitoring review…",
-  running: "Running — the agent is retrieving and computing.",
+  running: "Running. The agent is retrieving and computing.",
   done: "Review complete.",
   error: "The run failed.",
 };

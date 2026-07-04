@@ -224,91 +224,16 @@
   position: relative;
 }
 
-/* Hero media: photo + floating card */
+/* Hero media */
 .ls-hero__media {
   position: relative;
 }
 .ls-hero__photo {
-  aspect-ratio: 4 / 3.2;
-  border-radius: 26px;
-  background-color: var(--plum-soft);
-  background-image:
-    linear-gradient(135deg, rgba(201, 116, 138, 0.15), rgba(142, 165, 131, 0.15)), url("/hero.jpg");
-  background-size: cover;
-  background-position: center;
-  box-shadow: 0 30px 60px -34px rgba(122, 60, 90, 0.5);
-}
-.ls-hero__card {
-  position: absolute;
-  right: -8px;
-  bottom: 26px;
-  width: 236px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 1rem 1.1rem;
-  box-shadow: 0 20px 44px -22px rgba(122, 60, 90, 0.5);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.ls-card-row {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  font-size: 0.9rem;
-}
-.ls-card-row--head {
-  font-weight: 600;
-  font-size: 0.95rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--line);
-}
-.ls-card-row strong {
   display: block;
-  font-size: 0.88rem;
-  font-weight: 600;
-}
-.ls-card-row span:last-child {
-  font-size: 0.78rem;
-  color: var(--ink-soft);
-}
-.ls-card-ic {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  flex-shrink: 0;
-}
-.ls-card-ic--plum {
-  background: var(--plum-soft);
-  color: var(--plum);
-}
-.ls-card-ic--sage {
-  background: var(--sage-soft);
-  color: var(--sage);
-}
-.ls-card-ic--rose {
-  background: var(--rose-soft);
-  color: var(--rose-deep);
-}
-.ls-card-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--line);
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-}
-.ls-card-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--rose);
-  box-shadow: 0 0 0 4px rgba(201, 116, 138, 0.18);
+  width: 100%;
+  height: auto;
+  border-radius: 26px;
+  box-shadow: 0 30px 60px -34px rgba(122, 60, 90, 0.5);
 }
 
 /* --- Feature trio --- */
@@ -618,9 +543,6 @@
   .ls-hero {
     grid-template-columns: 1fr;
     gap: 2.5rem;
-  }
-  .ls-hero__card {
-    right: 12px;
   }
   .ls-feature-grid,
   .ls-steps {

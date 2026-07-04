@@ -106,7 +106,7 @@ export const patientREvents: AgentEvent[] = [
     signal: {
       name: "e2_rate",
       value: "+88%/day",
-      detail: "E2 rose from 520 to 980 pg/mL between day 7 and day 9 (+88%/day) — within curve.",
+      detail: "E2 rose from 520 to 980 pg/mL between day 7 and day 9 (+88%/day), within curve.",
       tripped: false,
     },
   },
@@ -137,7 +137,7 @@ export const patientREvents: AgentEvent[] = [
     run_id: "run-r-1",
     step: 6,
     name: "next_draw_timing",
-    detail: "Next draw in 48h — routine cadence.",
+    detail: "Next draw in 48h at routine cadence.",
   },
   {
     type: "brief",

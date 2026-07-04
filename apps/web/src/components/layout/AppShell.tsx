@@ -20,7 +20,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
       <header className="app-shell__header">
-        <Link to="/app" className="app-shell__brand">
+        <Link to="/" className="app-shell__brand">
           MILA
         </Link>
         <span className="app-shell__subtitle">Internal monitoring &amp; escalation review</span>

@@ -6,7 +6,7 @@ export function formatDateTime(iso: string): string {
 }
 
 export function formatAnalyte(value: number | null | undefined, unit: string): string {
-  if (value === null || value === undefined) return "—";
+  if (value === null || value === undefined) return "Not available";
   return `${value} ${unit}`;
 }
 

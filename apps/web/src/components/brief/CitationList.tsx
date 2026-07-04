@@ -11,7 +11,7 @@ export function CitationList({ citations }: { citations: Citation[] }) {
         <li key={`${citation.doc_id}-${index}`}>
           <details>
             <summary>
-              {citation.article} — {citation.doc_id.replace(/_/g, " ")}
+              {citation.article}, {citation.doc_id.replace(/_/g, " ")}
               {typeof citation.score === "number" ? ` (score ${citation.score.toFixed(2)})` : ""}
             </summary>
             <p className="citation-list__meta">

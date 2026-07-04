@@ -12,7 +12,7 @@ export function BriefPanel({
   onValidated: (brief: MonitoringBrief) => void;
 }) {
   if (!brief) {
-    return <p className="brief-panel__empty">No brief yet — run the monitoring review first.</p>;
+    return <p className="brief-panel__empty">No brief yet. Run the monitoring review first.</p>;
   }
 
   return (

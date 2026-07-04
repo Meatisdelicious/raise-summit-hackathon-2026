@@ -53,22 +53,6 @@ function IconChart() {
     </svg>
   );
 }
-function IconCheck() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="m5 12 4 4 10-10" />
-    </svg>
-  );
-}
-function IconDoc() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M7 3h7l4 4v14H7Z" />
-      <path d="M14 3v4h4" />
-      <path d="M10 12h5M10 16h5" />
-    </svg>
-  );
-}
 function IconSpark() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -105,7 +89,7 @@ const features = [
     tint: "plum",
     icon: <IconLeaf />,
     title: "Le calcul décide, pas le modèle",
-    body: "Des calculateurs déterministes fixent le signal d'escalade — jamais un verdict autonome.",
+    body: "Des calculateurs déterministes fixent le signal d'escalade. Le modèle ne rend jamais de verdict autonome.",
   },
   {
     tint: "sage",
@@ -121,7 +105,7 @@ const steps = [
     tint: "coral",
     icon: <IconFolder />,
     title: "Reconstruire",
-    body: "La trajectoire hormonale complète — pas la valeur du jour isolée.",
+    body: "La trajectoire hormonale complète, jamais la valeur du jour isolée.",
   },
   {
     n: "2",
@@ -170,7 +154,7 @@ export function LandingPage() {
             <p className="ls-hero__lede">
               MILA assiste le biologiste et le clinicien&nbsp;: à chaque nouveau dosage hormonal, il
               reconstruit la trajectoire, calcule les signaux de risque et prépare une escalade
-              citée, prête à valider — en lien avec l'équipe médicale.
+              citée, prête à valider en lien avec l'équipe médicale.
             </p>
             <div className="ls-hero__actions">
               <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
@@ -190,37 +174,13 @@ export function LandingPage() {
           </Reveal>
 
           <Reveal className="ls-hero__media">
-            <div className="ls-hero__photo" role="img" aria-label="Une biologiste échangeant avec une patiente" />
-            <div className="ls-hero__card" aria-hidden="true">
-              <div className="ls-card-row ls-card-row--head">
-                <span className="ls-card-ic ls-card-ic--plum">
-                  <IconSpark />
-                </span>
-                Revue de monitoring
-              </div>
-              <div className="ls-card-row">
-                <span className="ls-card-ic ls-card-ic--sage">
-                  <IconCheck />
-                </span>
-                <div>
-                  <strong>Trajectoire reconstruite</strong>
-                  <span>3 dosages · jour 8</span>
-                </div>
-              </div>
-              <div className="ls-card-row">
-                <span className="ls-card-ic ls-card-ic--rose">
-                  <IconDoc />
-                </span>
-                <div>
-                  <strong>Règle citée</strong>
-                  <span>OHSS · SOP §4.2</span>
-                </div>
-              </div>
-              <div className="ls-card-foot">
-                <span>En attente de validation</span>
-                <span className="ls-card-dot" />
-              </div>
-            </div>
+            <img
+              className="ls-hero__photo"
+              src="/frontpage.png"
+              alt="Une biologiste échangeant avec une patiente"
+              width="461"
+              height="405"
+            />
           </Reveal>
         </section>
 
@@ -268,14 +228,14 @@ export function LandingPage() {
               &ldquo;
             </span>
             <blockquote>
-              Avec MILA, la bonne règle arrive citée et au bon moment — je valide, je n'ai plus à
+              Avec MILA, la bonne règle arrive citée au bon moment. Je valide et je n'ai plus à
               reconstruire chaque trajectoire à la main.
             </blockquote>
             <div className="ls-quote__by">
               <span className="ls-quote__avatar" aria-hidden="true" />
               <div>
                 <strong>Biologiste médical</strong>
-                <span>— témoignage fictif</span>
+                <span>Témoignage fictif</span>
               </div>
             </div>
           </Reveal>
@@ -302,7 +262,7 @@ export function LandingPage() {
             <div>
               <h2 className="ls-cta__title">Voir MILA fermer la boucle sur un cycle</h2>
               <p className="ls-cta__lede">
-                Une approche plus lisible et plus sûre du monitoring de stimulation — sur un cas de
+                Une approche plus lisible et plus sûre du monitoring de stimulation, présentée sur un cas de
                 démonstration entièrement synthétique.
               </p>
             </div>

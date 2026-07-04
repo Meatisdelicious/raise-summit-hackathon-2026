@@ -49,7 +49,7 @@ function SingleEvent({ event }: { event: AgentEvent }) {
         <div className="trace-item">
           <InfoIcon />
           <span>
-            Retrieved {event.rule_type} rule — {event.citation.article} (score{" "}
+            Retrieved {event.rule_type} rule: {event.citation.article} (score{" "}
             {event.citation.score?.toFixed(2)})
           </span>
         </div>
@@ -67,7 +67,7 @@ function SingleEvent({ event }: { event: AgentEvent }) {
       return (
         <div className="trace-item">
           <CheckIcon />
-          <span>Monitoring brief drafted — see the evidence panel below.</span>
+          <span>Monitoring brief drafted. See the evidence panel below.</span>
         </div>
       );
     case "escalate":
@@ -112,7 +112,7 @@ export function TraceEventItem({ item }: { item: TraceItem }) {
       <div className="trace-item__what">
         <WarningIcon />
         <span>
-          Fetched the <strong>{retrieveRule.rule_type}</strong> rule — {retrieveRule.citation.article}{" "}
+          Fetched the <strong>{retrieveRule.rule_type}</strong> rule: {retrieveRule.citation.article}{" "}
           (page {retrieveRule.citation.page}, score {retrieveRule.citation.score?.toFixed(2)})
         </span>
       </div>
