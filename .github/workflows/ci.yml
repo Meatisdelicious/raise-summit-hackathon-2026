@@ -6,9 +6,9 @@ on:
   push:
     branches: [main]
 
-# CI runs in REPLAY mode and never calls Vultr (AGENTS.md §7). The live path is checked by smoke-live.yml.
+# Tests run in REPLAY mode and never call Vultr. Live Vultr is checked by smoke-live.yml.
 env:
-  LOOPCLOSER_INFERENCE_MODE: replay
+  CS_INFERENCE_MODE: replay
 
 jobs:
   privacy:
@@ -19,49 +19,16 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - name: Privacy scan
+      - name: Privacy scan (no real hormone data / identifiers / PDFs)
         run: python scripts/privacy_scan.py
       - name: gitleaks
         uses: gitleaks/gitleaks-action@v2
         continue-on-error: true
         env: { GITLEAKS_CONFIG: .gitleaks.toml }
 
-  ownership:
-    name: ownership (required)
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - name: Derive task id from PR labels
-        id: task
-        env: { GH_TOKEN: ${{ github.token }} }
-        run: |
-          # Prefer a task:<id> label; fall back to parsing the branch name task/w<n>-<id>-...
-          TID=$(gh pr view "${{ github.event.pull_request.number }}" --json labels -q '.labels[].name' | grep -oE '^task:[A-Za-z0-9]+' | head -1 | cut -d: -f2 || true)
-          if [ -z "$TID" ]; then TID=$(echo "${{ github.head_ref }}" | grep -oE 'w[0-9]+-[A-Za-z0-9]+' | cut -d- -f2 | head -1 || true); fi
-          echo "id=$TID" >> "$GITHUB_OUTPUT"
-      - name: Check ownership
-        if: steps.task.outputs.id != ''
-        run: python scripts/check_ownership.py "${{ steps.task.outputs.id }}" --base "origin/${{ github.base_ref }}"
-      - name: No task id (skip)
-        if: steps.task.outputs.id == ''
-        run: echo "No task:<id> label or parseable branch — ownership check skipped."
-
   backend:
-    name: backend (lint/type/test/eval)
+    name: backend (lint/type/test)
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16
-        env: { POSTGRES_USER: loopcloser, POSTGRES_PASSWORD: loopcloser, POSTGRES_DB: loopcloser }
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd "pg_isready -U loopcloser" --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      DATABASE_URL: postgresql+psycopg://loopcloser:loopcloser@localhost:5432/loopcloser
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -73,15 +40,12 @@ jobs:
       - name: Install
         if: steps.guard.outputs.go == 'true'
         run: pip install uv && (cd apps/api && uv sync || pip install -e '.[dev]')
-      - name: Lint + typecheck
+      - name: Lint + typecheck + test
         if: steps.guard.outputs.go == 'true'
-        run: make lint typecheck
-      - name: Test + eval (replay)
-        if: steps.guard.outputs.go == 'true'
-        run: make test eval
+        run: make lint typecheck test
 
   web:
-    name: web (build + e2e)
+    name: web (build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -94,6 +58,3 @@ jobs:
       - name: Install + build
         if: steps.guard.outputs.go == 'true'
         run: cd apps/web && npm ci && npm run build
-      - name: Playwright e2e (replay)
-        if: steps.guard.outputs.go == 'true'
-        run: cd apps/web && (npx playwright install --with-deps && npx playwright test) || echo "no e2e yet"

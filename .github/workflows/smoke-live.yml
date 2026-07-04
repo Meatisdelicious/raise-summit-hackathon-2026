@@ -1,7 +1,7 @@
 name: smoke-live
 
-# Manual, credentialed pre-demo check that the LIVE Vultr path works on synthetic data.
-# NOT run on PRs — CI stays deterministic in replay mode (AGENTS.md §7).
+# Manual, credentialed pre-demo check that the LIVE Vultr path works on SYNTHETIC data only.
+# Not run on PRs — CI stays deterministic in replay mode.
 on:
   workflow_dispatch:
 
@@ -9,9 +9,9 @@ jobs:
   smoke-live:
     name: live Vultr smoke (synthetic only)
     runs-on: ubuntu-latest
-    environment: demo   # gate the secrets behind an environment
+    environment: demo   # gate secrets behind an environment
     env:
-      LOOPCLOSER_INFERENCE_MODE: live
+      CS_INFERENCE_MODE: live
       VULTR_INFERENCE_API_KEY: ${{ secrets.VULTR_INFERENCE_API_KEY }}
       VULTR_INFERENCE_BASE_URL: ${{ secrets.VULTR_INFERENCE_BASE_URL }}
       VULTR_MODEL: ${{ secrets.VULTR_MODEL }}
@@ -24,4 +24,4 @@ jobs:
       - name: Live smoke (synthetic corpus only)
         run: |
           if [ -f scripts/smoke_live.py ]; then python scripts/smoke_live.py; \
-          else echo "scripts/smoke_live.py not present yet (add in T42/T50)"; fi
+          else echo "scripts/smoke_live.py not present yet"; fi

@@ -1,38 +1,34 @@
 # Architecture
 
-Full detail in [`docs/doc.md`](doc.md) §8. Summary for build-agents.
-
 ```text
-Browser (React case workbench, Vite)
-  |  HTTP + Server-Sent Events
-  v
-FastAPI orchestration API  ── on Vultr Compute ──────────────────────────┐
-  |                    |                          |                        |
-  | plan/extract/      | search/validate/         | persist               | store
-  | query/explain      | decide (deterministic)   |                       |
-  v                    v                          v                        v
-Vultr Serverless    tools/ + policies/        Vultr Managed           Vultr Object
-Inference (LIVE)    + retrieval/              PostgreSQL              Storage (private)
-(critical path)     (deterministic core)      cases/decisions/audit   synthetic PDFs
+React case view (apps/web, Raph)
+  │  REST (JSON)  +  SSE (live agent trace)
+  ▼
+FastAPI agent (apps/api, pkg cyclesentinel) ── on Vultr Compute ─────────────────┐
+  │ plan / interpret / write brief        │ deterministic calculators           │
+  ▼                                        ▼                                     ▼
+Vultr Serverless Inference (LIVE)     compute_* + rules (no LLM)          Vultr PostgreSQL + pgvector
+  planning, interpretation,           E2 rate, E2/follicle, OHSS          (EU region, HDS-aligned)
+  brief prose, tool selection         composite, P4-for-day, timing       patients · results · briefs ·
+       ▲                                                                   agent_runs · PROTOCOL/SOP corpus
+       │ retrieve_protocol_rule(rule_type=…)  ← conditional, computation-driven
+       └───────────────────────────────────────────────────────────────► vector search over the corpus
+                                                                          (+ Vultr Object Storage: source docs)
 ```
 
-## Layers (backend package `loopcloser`)
-- **`agent/`** — orchestrator (state flow: INGESTED → RECOMMENDATION_DETECTED → PLAN_CREATED →
-  EVIDENCE_SEARCH → VALIDATE_CANDIDATE → (TARGETED_RETRIEVAL) → DECIDE → DRAFT_OPERATIONAL_ACTION →
-  HUMAN_APPROVAL → MONITOR), plus `agent/inference/` (Vultr/replay/stub) and `agent/decision.py` (the
-  6-state machine, owned by backend-core).
-- **`tools/`** — the 8-tool registry; args/results validated by Pydantic; model can't call unregistered
-  tools.
-- **`retrieval/`** — page-aware chunking, document-type + date filters before semantic ranking, exact
-  alias match for deterministic targets, resolvable citations.
-- **`policies/`** — deterministic validators (temporal, final-vs-draft, appointment-vs-completion,
-  alias, deadline) and the decision policy. **The LLM can never override these.**
-- **`models/`** — SQLAlchemy ORM + Pydantic schemas + enums (the frozen seams).
-- **`storage/`** — S3-compatible client for Vultr Object Storage (private bucket, short-lived signed
-  URLs).
+## Layers (`cyclesentinel`)
+- **`agent/`** — the orchestration loop (plan → retrieve context → retrieve trajectory → compute → branch
+  → conditional retrieve → compute action → decide → draft → escalate), step/limit handling, run + step
+  logging, SSE event emission. Plus `agent/inference/` (Vultr / replay / stub, selected by `CS_INFERENCE_MODE`).
+- **`calculators/`** — the deterministic signal functions (pure, unit-tested). **The LLM never overrides these.**
+- **`retrieval/`** — `retrieve_protocol_rule` over the pgvector corpus, filtered by `rule_type`; returns
+  text + article citation.
+- **`tools/`** — the tool registry wrapping calculators + retrieval + brief/escalation, Pydantic-validated.
+- **`models/`** — SQLAlchemy ORM + Pydantic schemas + the state enum (the shapes in `CONTRACTS.md`).
 - **`api/`** — FastAPI routes incl. the SSE trace stream.
 
 ## Determinism boundary
-Inference proposes (extraction, plan, queries, tool selection, explanation). Deterministic code
-disposes (validation, state assignment). This boundary is what makes false-closure = 0 achievable and
-what makes CI reproducible via replay cassettes.
+Inference **proposes** (plan, interpretation, which rule to fetch, brief prose). Deterministic code
+**disposes** (the computed signals and the escalation flag). This is what keeps it safe (no autonomous
+clinical verdict), auditable (every flag traces to a calculator + a cited article), and reproducible
+(replay cassettes make CI deterministic while the demo runs live on Vultr).
