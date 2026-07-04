@@ -153,6 +153,11 @@ export function TraceEventItem({ item }: { item: TraceItem }) {
   }
 
   const { branch, retrieveRule } = item;
+  const { citation, hits, rule_type } = retrieveRule;
+  const others = hits.filter(
+    (hit) => !(hit.doc_id === citation.doc_id && hit.page === citation.page),
+  );
+
   return (
     <li className="trace-step trace-step--primary trace-step--pair">
       <span className="trace-step__rail" aria-hidden="true">
@@ -164,28 +169,31 @@ export function TraceEventItem({ item }: { item: TraceItem }) {
         <div className="trace-pair">
           <p className="trace-pair__eyebrow">Why it looked deeper</p>
           <p className="trace-pair__reason">{branch.reason}</p>
-          <p className="trace-pair__rule">
-            Fetched the <strong>{ruleTypeLabel[retrieveRule.rule_type]}</strong> rule —{" "}
-            {retrieveRule.citation.article} (page {retrieveRule.citation.page}, score{" "}
-            {retrieveRule.citation.score?.toFixed(2)})
-          </p>
-          {retrieveRule.hits.length > 0 && (
-            <ul className="trace-item__hits">
-              {retrieveRule.hits.map((hit) => {
-                const chosen =
-                  hit.doc_id === retrieveRule.citation.doc_id && hit.page === retrieveRule.citation.page;
-                return (
-                  <li
-                    key={`${hit.doc_id}-${hit.page}`}
-                    className={chosen ? "trace-item__hit trace-item__hit--chosen" : "trace-item__hit"}
-                  >
+
+          <div className="trace-pair__chosen">
+            <p className="trace-pair__rule">
+              Opened the <strong>{ruleTypeLabel[rule_type]}</strong> protocol rule
+            </p>
+            <p className="trace-pair__cite">
+              {citation.article} · {citation.doc_id.replace(/_/g, " ")} · page {citation.page}
+            </p>
+          </div>
+
+          {others.length > 0 && (
+            <details className="trace-pair__more">
+              <summary>
+                {others.length} other candidate{others.length > 1 ? "s" : ""} considered
+              </summary>
+              <ul className="trace-item__hits">
+                {others.map((hit) => (
+                  <li key={`${hit.doc_id}-${hit.page}`} className="trace-item__hit">
                     {hit.doc_id} p{hit.page} · {hit.article} · score {hit.score.toFixed(2)}
-                    {chosen ? " ✓" : ""}
                   </li>
-                );
-              })}
-            </ul>
+                ))}
+              </ul>
+            </details>
           )}
+
           <p className="trace-pair__caption">
             It went back for the exact protocol rule <em>because of what it just measured</em> —
             that's what makes MILA an agent, not a search box.

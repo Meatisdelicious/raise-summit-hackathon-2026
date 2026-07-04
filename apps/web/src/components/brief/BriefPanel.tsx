@@ -1,9 +1,16 @@
 import type { MonitoringBrief } from "../../types/contracts";
 import { StateFlag } from "../shared/StateFlag";
-import { EscalationBadge } from "../shared/EscalationBadge";
 import { CitationList } from "./CitationList";
 import { ValidateBriefButton } from "./ValidateBriefButton";
 import { decisionStateLabels } from "../../lib/decisionLabels";
+import { escalationStatus } from "../../lib/glossary";
+import { CheckIcon, InfoIcon, WarningIcon } from "../shared/icons";
+
+function StatusIcon({ tone }: { tone: string }) {
+  if (tone === "success") return <CheckIcon />;
+  if (tone === "danger" || tone === "warning") return <WarningIcon />;
+  return <InfoIcon />;
+}
 
 export function BriefPanel({
   brief,
@@ -20,17 +27,30 @@ export function BriefPanel({
     );
   }
 
+  const status = escalationStatus[brief.escalation_level];
+
   return (
-    <div className="brief-panel">
-      <div className="brief-panel__flags">
-        <EscalationBadge level={brief.escalation_level} />
-        {brief.states.map((state) => (
-          <div key={state} className="brief-flag">
-            <StateFlag state={state} />
-            <p className="brief-flag__desc">{decisionStateLabels[state].description}</p>
-          </div>
-        ))}
+    <div className="brief-panel brief-reveal">
+      <div className={`brief-status brief-status--${status.tone}`}>
+        <span className="brief-status__icon" aria-hidden="true">
+          <StatusIcon tone={status.tone} />
+        </span>
+        <div>
+          <p className="brief-status__word">{status.word}</p>
+          <p className="brief-status__hint">{status.hint}</p>
+        </div>
       </div>
+
+      {brief.states.length > 0 && (
+        <div className="brief-panel__flags">
+          {brief.states.map((state) => (
+            <div key={state} className="brief-flag">
+              <StateFlag state={state} />
+              <p className="brief-flag__desc">{decisionStateLabels[state].description}</p>
+            </div>
+          ))}
+        </div>
+      )}
 
       <hr className="brief-panel__divider" />
 

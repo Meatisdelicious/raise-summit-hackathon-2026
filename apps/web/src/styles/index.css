@@ -928,6 +928,294 @@ a:hover {
   padding: 2rem 0;
 }
 
+/* ============================================================================
+   Rebuilt case flow — guided single-column narrative, paced reveal, animations
+   ============================================================================ */
+
+.case {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.button--lg {
+  padding: 0.72rem 1.5rem;
+  font-size: var(--text-lg);
+}
+
+/* --- Plain-language patient switcher --- */
+.case-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.case-switch__chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline);
+  background: var(--surface);
+  padding: 0.32rem 0.85rem;
+  font-size: var(--text-sm);
+  font-weight: 550;
+  color: var(--muted);
+  transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.case-switch__chip:hover {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--hairline));
+  color: var(--ink);
+}
+
+.case-switch__chip--active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.case-switch__chip--active:hover {
+  color: #fff;
+}
+
+/* --- Secondary clinical detail (tucked away) --- */
+.case-detail {
+  margin-top: 0.65rem;
+}
+
+.case-detail > summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.case-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.case-detail > summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid var(--muted);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 120ms ease;
+}
+
+.case-detail[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.case-detail .meta-chips {
+  margin-top: 0.6rem;
+}
+
+/* --- Run control refinements --- */
+.run-controls__hint {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.run-controls__arrow {
+  color: var(--faint);
+  margin: 0 0.15rem;
+}
+
+/* --- Trace + brief section rhythm --- */
+.case-trace,
+.case-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+/* --- Paced step entrance (each newly revealed step animates in) --- */
+@keyframes trace-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.trace-timeline > .trace-step {
+  animation: trace-step-in 440ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* --- "MILA is thinking…" pending node with a pulsing rail dot --- */
+.trace-step--thinking {
+  animation: trace-step-in 260ms ease both;
+}
+
+.trace-step__dot--pulse {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.35rem;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  border: 2px solid var(--primary);
+  animation: thinking-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes thinking-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+  60% {
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+}
+
+.trace-thinking__label {
+  font-family: var(--mono);
+  font-size: var(--text-sm);
+  color: var(--primary-ink);
+  margin-top: 0.3rem;
+}
+
+/* --- The money shot: branch → retrieve_rule pair spotlight --- */
+@keyframes pair-spotlight {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+}
+
+.trace-step--pair .trace-pair {
+  animation: pair-spotlight 1600ms ease-out 220ms 1;
+}
+
+.trace-pair__chosen {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
+  border-radius: var(--radius-sm);
+}
+
+.trace-pair__cite {
+  font-family: var(--mono);
+  font-size: var(--text-xs);
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.trace-pair__more {
+  margin-top: 0.6rem;
+}
+
+.trace-pair__more > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--text-xs);
+  font-family: var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--primary-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.trace-pair__more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.trace-pair__more > summary::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transition: transform 120ms ease;
+}
+
+.trace-pair__more[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+/* --- Brief finale --- */
+@keyframes brief-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brief-reveal {
+  animation: brief-in 540ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.brief-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+
+.brief-status--success {
+  background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 25%, transparent);
+  color: var(--success);
+}
+
+.brief-status--warning {
+  background: var(--warning-soft);
+  border-color: color-mix(in srgb, var(--warning) 25%, transparent);
+  color: var(--warning);
+}
+
+.brief-status--danger {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 25%, transparent);
+  color: var(--danger);
+}
+
+.brief-status__icon {
+  flex: none;
+  margin-top: 0.15rem;
+}
+
+.brief-status__word {
+  font-size: var(--text-lg);
+  font-weight: 680;
+}
+
+.brief-status__hint {
+  color: var(--ink);
+  font-size: var(--text-sm);
+  margin-top: 0.1rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;

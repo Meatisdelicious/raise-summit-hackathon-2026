@@ -136,7 +136,7 @@ export function LandingPage() {
           <a href="#safety">Safety</a>
           <Link to="/app">Sign in</Link>
         </nav>
-        <Link to="/app" className="ls-btn ls-btn--primary ls-nav__cta">
+        <Link to="/app/patients/pat-K" className="ls-btn ls-btn--primary ls-nav__cta">
           <IconSpark />
           View the demo
         </Link>
@@ -157,7 +157,7 @@ export function LandingPage() {
               ready to validate with the medical team.
             </p>
             <div className="ls-hero__actions">
-              <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
+              <Link to="/app/patients/pat-K" className="ls-btn ls-btn--primary ls-btn--lg">
                 Watch a live review →
               </Link>
               <a href="#how" className="ls-btn ls-btn--ghost ls-btn--lg">
@@ -266,7 +266,7 @@ export function LandingPage() {
                 demo case.
               </p>
             </div>
-            <Link to="/app" className="ls-btn ls-btn--primary ls-btn--lg">
+            <Link to="/app/patients/pat-K" className="ls-btn ls-btn--primary ls-btn--lg">
               Open a review →
             </Link>
           </Reveal>

@@ -1,23 +1,44 @@
 import type { AgentEvent } from "../../types/contracts";
-import { groupTraceEvents } from "../../lib/traceGrouping";
+import { groupTraceEvents, type TraceItem } from "../../lib/traceGrouping";
 import { TraceEventItem } from "./TraceEventItem";
 
-export function AgentTracePanel({ events }: { events: AgentEvent[] }) {
-  const items = groupTraceEvents(events);
-
-  if (items.length === 0) {
-    return (
-      <p className="trace-panel__empty">
-        Run the review to watch MILA think — step by step, in real time.
-      </p>
-    );
+// Stable identity per rendered row so React keeps existing steps mounted (they don't re-animate)
+// while a newly revealed step mounts fresh and plays its entrance. The branch→retrieve_rule pair
+// gets its own key so the moment it forms it remounts and plays the spotlight.
+function itemKey(item: TraceItem): string {
+  if (item.kind === "single") {
+    const e = item.event;
+    return "step" in e ? `s-${e.type}-${e.step}` : `s-${e.type}`;
   }
+  return `p-${item.branch.step}`;
+}
+
+export function AgentTracePanel({
+  events,
+  thinking,
+  running,
+}: {
+  events: AgentEvent[];
+  thinking: boolean;
+  running: boolean;
+}) {
+  const items = groupTraceEvents(events);
 
   return (
     <ol className="trace-timeline" aria-label="How MILA is thinking, step by step">
-      {items.map((item, index) => (
-        <TraceEventItem key={index} item={item} />
+      {items.map((item) => (
+        <TraceEventItem key={itemKey(item)} item={item} />
       ))}
+      {running && thinking && (
+        <li className="trace-step trace-step--thinking" aria-hidden="true">
+          <span className="trace-step__rail">
+            <span className="trace-step__dot trace-step__dot--pulse" />
+          </span>
+          <div className="trace-step__body">
+            <p className="trace-thinking__label">MILA is thinking…</p>
+          </div>
+        </li>
+      )}
     </ol>
   );
 }
