@@ -73,14 +73,21 @@ Captured **live** from the running backend against Vultr (Kimi K2.6 + Vultr Vect
 [ 8] COMPUTE  response_curve     tracks the expected antagonist curve
 [ 9] COMPUTE  monitoring_gap     within the 2-day cadence
 [10] 🔀 BRANCH -> ohss           (because ohss_composite tripped)
-[11] 📄 RETRIEVE_RULE  ohss_sop §2.1      <- Vultr Vector Store
+[11] 📄 RETRIEVE_RULE  ohss_sop §3.1   score 29.35   <- Vector Store recall + Vultron rerank
 [12] 🔀 BRANCH -> luteinization  (because P4 tripped for the day)
-[13] 📄 RETRIEVE_RULE  luteinization §2.4    <- Vultr Vector Store
+[13] 📄 RETRIEVE_RULE  luteinization §2.3   score 28.91   <- Vector Store recall + Vultron rerank
 [14] ACTION  next_draw_timing    accelerating -> next draw in 24h
 [15] 📝 BRIEF drafted (Kimi K2)   dual flag, every clause cited
 [16] 🚨 ESCALATE  urgent -> biologist
      ✅ DONE  [OHSS_RISK_ESCALATE, PREMATURE_LUTEINIZATION_FLAG]
 ```
+
+> **This is genuinely on Vultr.** Each run makes real Vultr Serverless Inference calls (EU region), verified against the live API:
+> - `POST /v1/chat/completions` — **Kimi K2.6** plans and writes the brief (temperature 0, JSON-only).
+> - `POST /v1/vector_store/{id}/search` — dense recall of the branch's `rule_type` collection.
+> - `POST /v1/rerank` — **Vultron Prime-8B** scores the candidate pages and picks the governing article. The `score 29.35` above is a real Vultron relevance score, not a placeholder.
+>
+> Consumption shows up under **Serverless Inference → Usage** (`GET /v1/usage`), not the Compute/credits page — there is no VM: serverless inference is pay-per-token.
 
 ### Same agent, four trajectories
 
