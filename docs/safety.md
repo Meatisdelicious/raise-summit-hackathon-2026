@@ -29,8 +29,10 @@ Binding on everyone working in this repo.
 > `docs/healthcare_data/`). Treat the privacy gate as non-optional. Never commit real lab documents.
 
 ## Sovereignty (Vultr / HDS)
-Host the agent + protocol/SOP vector store in an **EU region**, **HDS-aligned** — the sovereign
-alternative to sensitive fertility data leaving the EU. The hackathon must not claim production HDS
+Host the agent, the LLM (**Kimi K2 Instruct**), the visual retriever (**Vultron Prime-8B**), and the
+protocol/SOP page embeddings (**Vultr Vector Store**) all in an **EU region**, **HDS-aligned** — the
+sovereign alternative to sensitive fertility data leaving the EU. Synthetic hormone data + protocol
+pages never leave Vultr EU; no third-party model is called. The hackathon must not claim production HDS
 certification or clinical efficacy; this is an engineering boundary, not legal or medical advice.
 
 ## Security baseline

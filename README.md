@@ -28,8 +28,9 @@ compute next action → **cited brief + escalation** → human validates. The co
 issued up front — which is why it's an agent, not RAG.
 
 ## Stack
-Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy + pgvector · React + TypeScript (Raph) · **Vultr**
-Serverless Inference + EU vector store (HDS-aligned) + Object Storage + Compute.
+Python 3.12 · FastAPI · Pydantic v2 · SQLAlchemy · React + TypeScript (Raph) · **Vultr** Serverless
+Inference — **Kimi K2 Instruct** (LLM) + **Vultron Prime-8B** (visual document retrieval over
+protocol/SOP pages) + Vultr Vector Store (EU, HDS-aligned; pgvector fallback) + Object Storage + Compute.
 
 ## Dev
 ```

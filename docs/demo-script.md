@@ -11,8 +11,8 @@ from the prior draw; progesterone is borderline for day 8.
 | 0:00–0:15 | **Problem** | "A hormone value alone means nothing. Interpreting it needs her whole trajectory and the right protocol rule — which one, you don't know yet." |
 | 0:15–0:30 | **New result lands** | Day-8 E2 arrives for Patient K. Click **Run monitoring review**. The agent shows its **plan** first. |
 | 0:30–0:50 | **Rebuild + compute** | Agent retrieves patient context (PCOS, day 8) → retrieves the **trajectory** → computes **E2 rate-of-rise** + **OHSS composite** (tools, live in the trace). |
-| 0:50–1:15 | **Money shot #1** | Because the OHSS composite **trips**, the agent goes and fetches the **OHSS-prevention SOP** — a document it would *not* have touched for a normal patient. Cited. |
-| 1:15–1:30 | **Money shot #2** | It *also* notices **progesterone borderline for day 8**, so it fetches the **premature-luteinization rule** (a second computation-triggered retrieval). Cited. |
+| 0:50–1:15 | **Money shot #1** | Because the OHSS composite **trips**, the **Prime-8B visual retriever** pulls the exact **OHSS-prevention SOP page** — a page it would *not* have touched for a normal patient. Show the retrieved page + score; Kimi K2 reads its text and cites §4.2. |
+| 1:15–1:30 | **Money shot #2** | It *also* notices **progesterone borderline for day 8**, so it retrieves the **premature-luteinization rule page** (a second computation-triggered visual retrieval). Cited §3.1. |
 | 1:30–1:45 | **Action + brief** | Computes **next-draw timing (24h not 48h)** → emits the brief: "High OHSS-risk trajectory; SOP §4.2 → coasting vs agonist-trigger; progesterone borderline per §3.1 → monitor for freeze-all; next draw 24h." Every clause cited. |
 | 1:45–2:00 | **Escalate + close** | **Escalation flag → biologist validates** → clinician alert. Close: "Cycle Sentinel doesn't decide medicine. It makes sure the right rule reaches the right person, in time — and it proves why." |
 

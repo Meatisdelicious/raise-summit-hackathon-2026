@@ -78,5 +78,8 @@ Impact 25% · **Demo 50% (dominant)** · Creativity 15% · Pitch 10%.
 - **Impact:** life-threatening OHSS + cycle-loss stakes; clear B2B lab buyer; auditable escalation, not advice.
 - **Demo:** the computation-driven conditional retrieval is the money shot.
 - **Creativity:** the dependency-graph-forbids-RAG argument.
-- **Pitch + Vultr:** host the agent + protocol/SOP vector store in an **EU region, HDS-aligned** — the
-  sovereign alternative to hormone data leaking abroad. A clean "future of work in healthcare" story.
+- **Pitch + Vultr:** an all-on-Vultr, Qwen3.5-lineage stack — **Kimi K2 Instruct** (reasoning/tool LLM)
+  + **Vultron Prime-8B visual document retrieval** over the protocol/SOP pages — hosted with the vector
+  store in an **EU region, HDS-aligned**. The sovereign alternative to hormone data leaking abroad; a
+  clean "future of work in healthcare" story. The visual VDR reinforces the "not RAG" thesis: the agent
+  fetches a *specific protocol page* only once a computation says which rule applies.
