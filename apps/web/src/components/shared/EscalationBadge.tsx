@@ -5,9 +5,9 @@ import { CheckIcon, InfoIcon, WarningIcon } from "./icons";
 function toneIcon(tone: Tone) {
   switch (tone) {
     case "danger":
+    case "warning":
       return WarningIcon;
-    case "info":
-      return InfoIcon;
+    case "success":
     case "neutral":
       return CheckIcon;
     default:

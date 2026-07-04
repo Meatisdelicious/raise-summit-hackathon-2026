@@ -6,15 +6,17 @@ export function AgentTracePanel({ events }: { events: AgentEvent[] }) {
   const items = groupTraceEvents(events);
 
   if (items.length === 0) {
-    return <p className="trace-panel__empty">Run the monitoring review to see the agent's trace.</p>;
+    return (
+      <p className="trace-panel__empty">
+        Run the review to watch MILA think — step by step, in real time.
+      </p>
+    );
   }
 
   return (
-    <ol className="trace-panel" aria-label="Live agent trace">
+    <ol className="trace-timeline" aria-label="How MILA is thinking, step by step">
       {items.map((item, index) => (
-        <li key={index}>
-          <TraceEventItem item={item} />
-        </li>
+        <TraceEventItem key={index} item={item} />
       ))}
     </ol>
   );

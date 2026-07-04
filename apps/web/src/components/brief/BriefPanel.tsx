@@ -3,6 +3,7 @@ import { StateFlag } from "../shared/StateFlag";
 import { EscalationBadge } from "../shared/EscalationBadge";
 import { CitationList } from "./CitationList";
 import { ValidateBriefButton } from "./ValidateBriefButton";
+import { decisionStateLabels } from "../../lib/decisionLabels";
 
 export function BriefPanel({
   brief,
@@ -12,29 +13,48 @@ export function BriefPanel({
   onValidated: (brief: MonitoringBrief) => void;
 }) {
   if (!brief) {
-    return <p className="brief-panel__empty">No brief yet. Run the monitoring review first.</p>;
+    return (
+      <p className="brief-panel__empty">
+        No read yet. Run the review and MILA's brief will appear here.
+      </p>
+    );
   }
 
   return (
     <div className="brief-panel">
       <div className="brief-panel__flags">
-        {brief.states.map((state) => (
-          <StateFlag key={state} state={state} />
-        ))}
         <EscalationBadge level={brief.escalation_level} />
+        {brief.states.map((state) => (
+          <div key={state} className="brief-flag">
+            <StateFlag state={state} />
+            <p className="brief-flag__desc">{decisionStateLabels[state].description}</p>
+          </div>
+        ))}
       </div>
 
-      <h3>Interpretation</h3>
-      <p>{brief.interpretation}</p>
+      <hr className="brief-panel__divider" />
 
-      <h3>Recommended action</h3>
-      <p>{brief.recommended_action}</p>
+      <div className="brief-panel__block">
+        <p className="brief-panel__label">What MILA sees</p>
+        <p>{brief.interpretation}</p>
+      </div>
 
-      <h3>Citations</h3>
-      <CitationList citations={brief.citations} />
+      <div className="brief-panel__block">
+        <p className="brief-panel__label">Recommended action</p>
+        <p>{brief.recommended_action}</p>
+      </div>
 
-      <h3>Validation</h3>
-      <ValidateBriefButton brief={brief} onValidated={onValidated} />
+      <div className="brief-panel__block">
+        <p className="brief-panel__label">Grounded in protocol</p>
+        <CitationList citations={brief.citations} />
+      </div>
+
+      <hr className="brief-panel__divider" />
+
+      <div className="brief-panel__block">
+        <p className="brief-panel__label">Human validation</p>
+        <ValidateBriefButton brief={brief} onValidated={onValidated} />
+      </div>
     </div>
   );
 }

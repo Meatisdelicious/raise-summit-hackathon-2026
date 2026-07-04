@@ -23,7 +23,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Link to="/" className="app-shell__brand">
           MILA
         </Link>
-        <span className="app-shell__subtitle">Internal monitoring &amp; escalation review</span>
+        <span className="app-shell__subtitle">
+          Internal monitoring — human-validated before the clinic
+        </span>
         <button
           type="button"
           className="button button--ghost app-shell__reset"

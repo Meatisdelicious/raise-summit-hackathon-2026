@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api } from "../../api";
 import type { MonitoringBrief } from "../../types/contracts";
 import { formatDateTime } from "../../lib/format";
+import { CheckIcon, WarningIcon } from "../shared/icons";
 
 // No auth in scope for this demo — a plausible synthetic default, still a real editable field.
 const DEFAULT_VALIDATOR = "Dr. Amélie Laurent (biologist)";
@@ -24,6 +25,7 @@ export function ValidateBriefButton({
     if (rejected) {
       return (
         <p className="validate-brief__done validate-brief__done--rejected" role="alert">
+          <WarningIcon />
           Rejected by {brief.validated_by} on{" "}
           {formatDateTime(brief.validated_at ?? brief.created_at)}.
         </p>
@@ -31,7 +33,8 @@ export function ValidateBriefButton({
     }
     return (
       <p className="validate-brief__done">
-        Validated by {brief.validated_by} on {formatDateTime(brief.validated_at ?? brief.created_at)}.
+        <CheckIcon />
+        Confirmed by {brief.validated_by} on {formatDateTime(brief.validated_at ?? brief.created_at)}.
       </p>
     );
   }
@@ -47,8 +50,12 @@ export function ValidateBriefButton({
   }
 
   return (
-    <div className="validate-brief">
-      <label className="validate-brief__field">
+    <div>
+      <p className="validate-brief__note">
+        A biologist confirms before anything reaches the clinic.
+      </p>
+      <div className="validate-brief">
+        <label className="validate-brief__field">
         Validated by
         <input
           type="text"
@@ -56,14 +63,15 @@ export function ValidateBriefButton({
           onChange={(event) => setValidatedBy(event.target.value)}
         />
       </label>
-      <button
-        type="button"
-        className="button button--primary"
-        onClick={() => void handleValidate()}
-        disabled={submitting || validatedBy.trim().length === 0}
-      >
-        {submitting ? "Validating…" : "Validate brief"}
-      </button>
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={() => void handleValidate()}
+          disabled={submitting || validatedBy.trim().length === 0}
+        >
+          {submitting ? "Confirming…" : "Confirm brief"}
+        </button>
+      </div>
     </div>
   );
 }
