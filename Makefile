@@ -24,15 +24,16 @@ install: ## Install backend + frontend deps (if present)
 verify: lint typecheck test privacy ## Pre-commit gate
 	@echo "✅ verify passed"
 
+# NB: the backend gate (verify/lint/typecheck/test) is API-ONLY. The frontend has its own build
+# check (apps/web: `npm run build` = tsc --noEmit + vite build) run by the `web` CI job — keeping
+# them separate means the backend CI job needs no Node/web deps.
 .PHONY: lint
-lint: ## ruff + eslint (if present)
+lint: ## ruff (backend)
 	@if [ -d $(API_DIR) ]; then (cd $(API_DIR) && $(RUN) ruff check . && $(RUN) ruff format --check .) || exit 1; else echo "skip lint: no api"; fi
-	@if [ -f $(WEB_DIR)/package.json ]; then (cd $(WEB_DIR) && npm run -s lint 2>/dev/null || echo "skip: no web lint"); fi
 
 .PHONY: typecheck
-typecheck: ## mypy --strict + tsc --noEmit (if present)
+typecheck: ## mypy --strict (backend)
 	@if [ -d $(API_DIR)/src ]; then (cd $(API_DIR) && $(RUN) mypy --strict src) || exit 1; else echo "skip typecheck: no api src"; fi
-	@if [ -f $(WEB_DIR)/package.json ]; then (cd $(WEB_DIR) && npx tsc --noEmit) || exit 1; else echo "skip typecheck: no web"; fi
 
 .PHONY: test
 test: ## pytest (replay mode)

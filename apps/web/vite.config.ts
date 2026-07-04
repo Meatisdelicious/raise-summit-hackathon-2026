@@ -8,10 +8,7 @@ export default defineConfig({
     // Dev proxy: the client uses a relative "/api" base, so the browser stays same-origin and the
     // Vite dev server forwards /api to the FastAPI backend — no CORS, no hardcoded host in the app.
     proxy: {
-      "/api": {
-        target: process.env.VITE_API_TARGET ?? "http://localhost:8000",
-        changeOrigin: true,
-      },
+      "/api": { target: "http://localhost:8000", changeOrigin: true },
     },
   },
 });
