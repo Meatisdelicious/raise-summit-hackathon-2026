@@ -24,15 +24,16 @@ install: ## Install backend + frontend deps (if present)
 verify: lint typecheck test privacy ## Pre-commit gate
 	@echo "✅ verify passed"
 
+# NB: the backend gate (verify/lint/typecheck/test) is API-ONLY. The frontend has its own build
+# check (apps/web: `npm run build` = tsc --noEmit + vite build) run by the `web` CI job — keeping
+# them separate means the backend CI job needs no Node/web deps.
 .PHONY: lint
-lint: ## ruff + eslint (if present)
+lint: ## ruff (backend)
 	@if [ -d $(API_DIR) ]; then (cd $(API_DIR) && $(RUN) ruff check . && $(RUN) ruff format --check .) || exit 1; else echo "skip lint: no api"; fi
-	@if [ -f $(WEB_DIR)/package.json ]; then (cd $(WEB_DIR) && npm run -s lint 2>/dev/null || echo "skip: no web lint"); fi
 
 .PHONY: typecheck
-typecheck: ## mypy --strict + tsc --noEmit (if present)
+typecheck: ## mypy --strict (backend)
 	@if [ -d $(API_DIR)/src ]; then (cd $(API_DIR) && $(RUN) mypy --strict src) || exit 1; else echo "skip typecheck: no api src"; fi
-	@if [ -f $(WEB_DIR)/package.json ]; then (cd $(WEB_DIR) && npx tsc --noEmit) || exit 1; else echo "skip typecheck: no web"; fi
 
 .PHONY: test
 test: ## pytest (replay mode)
@@ -56,3 +57,14 @@ dev: ## Run the backend API (uvicorn) in replay mode
 .PHONY: demo
 demo: ## Run the backend in LIVE mode against Vultr (sources ./.env — kept out of apps/api so tests ignore it)
 	@set -a; [ -f .env ] && . ./.env; set +a; cd $(API_DIR) && CS_INFERENCE_MODE=live $(RUN) uvicorn cyclesentinel.main:app --reload
+
+.PHONY: web
+web: ## Run the frontend dev server (connects to the backend via the Vite /api proxy)
+	@cd $(WEB_DIR) && npm run dev
+
+.PHONY: stack
+stack: ## Run backend (replay) + frontend together — one command demo (Ctrl-C stops both)
+	@echo "API  → http://localhost:8000   ·   Web → http://localhost:5173"; \
+	( cd $(API_DIR) && CS_INFERENCE_MODE=replay $(RUN) uvicorn cyclesentinel.main:app ) & \
+	API_PID=$$!; trap "kill $$API_PID 2>/dev/null" EXIT INT TERM; \
+	cd $(WEB_DIR) && npm run dev
