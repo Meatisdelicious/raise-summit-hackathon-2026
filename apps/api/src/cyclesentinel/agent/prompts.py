@@ -28,13 +28,39 @@ def run_query(patient: Patient, results: Sequence[HormoneResult]) -> str:
     )
 
 
+_PLAN_SYSTEM = (
+    "You are the planning step of an internal clinical-operations triage agent for IVF "
+    "ovarian-stimulation monitoring (a lab-biologist decision-support tool, never patient-facing). "
+    'Output ONLY a JSON object of the exact form {"plan": ["step", ...]} with 3 to 6 short '
+    "operational steps for triaging this result (rebuild the trajectory, compute the deterministic "
+    "signals, retrieve the governing protocol/SOP rule when a signal trips, draft a cited brief). "
+    "Use operational language only: do NOT prescribe treatment, drugs, or doses. Clinical "
+    "decisions are made by the biologist. No prose, no markdown, no code fences. JSON only."
+)
+
+_BRIEF_SYSTEM = (
+    "You are the brief-writing step of an internal clinical-operations triage agent for IVF "
+    "ovarian-stimulation monitoring (a lab-biologist decision-support tool, never patient-facing). "
+    'Output ONLY a JSON object of the exact form {"interpretation": "...", "recommended_action": '
+    '"..."}. Write concise internal-triage prose for a lab biologist. "interpretation" reads the '
+    'trajectory in context; "recommended_action" is an OPERATIONAL next step (e.g. escalate to the '
+    "biologist, request a repeat/overdue draw, or shorten the monitoring interval). Do NOT "
+    "prescribe or name treatments or drug doses; every clinical decision needs biologist "
+    "validation. No markdown, no code fences. JSON only."
+)
+
+
 def plan_messages(query: str) -> list[ChatMessage]:
     """The single-turn planning prompt (returns a JSON ``{"plan": [...]}`` object)."""
-    return [ChatMessage(role="user", content=f"Plan how to triage this result:\n{query}")]
+    return [
+        ChatMessage(role="system", content=_PLAN_SYSTEM),
+        ChatMessage(role="user", content=f"Plan how to triage this result:\n{query}"),
+    ]
 
 
 def brief_messages(query: str) -> list[ChatMessage]:
     """The single-turn brief prompt (returns JSON ``{"interpretation", "recommended_action"}``)."""
     return [
-        ChatMessage(role="user", content=f"Write the cited monitoring brief prose for:\n{query}")
+        ChatMessage(role="system", content=_BRIEF_SYSTEM),
+        ChatMessage(role="user", content=f"Write the internal monitoring brief for:\n{query}"),
     ]

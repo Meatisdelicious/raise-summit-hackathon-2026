@@ -74,7 +74,6 @@ class CaseSpec:
 
     case: str
     query: str
-    llm_prompts: list[str] = field(default_factory=list)  # one user prompt per LLM turn
     branches: list[str] = field(default_factory=list)  # rule_type per retriever turn
 
 
@@ -90,15 +89,10 @@ def build_request_specs() -> list[CaseSpec]:
     for case_name, case in manifest["cases"].items():
         patient = patients[case["patient_id"]]
         results = sorted(by_patient[patient["id"]], key=lambda r: r["cycle_day"])
-        query = _trajectory_query(patient, results)
         specs.append(
             CaseSpec(
                 case=case_name,
-                query=query,
-                llm_prompts=[
-                    f"Plan how to triage this result:\n{query}",
-                    f"Write the cited monitoring brief prose for:\n{query}",
-                ],
+                query=_trajectory_query(patient, results),
                 branches=CASE_BRANCHES[case_name],
             )
         )
@@ -108,6 +102,7 @@ def build_request_specs() -> list[CaseSpec]:
 # --- imports from the inference lane (guarded so the tool fails loudly, never silently) ----------
 def _import_inference() -> Any:
     try:
+        from cyclesentinel.agent.prompts import brief_messages, plan_messages
         from cyclesentinel.config import get_settings
         from cyclesentinel.enums import RuleType
         from cyclesentinel.inference import (
@@ -117,8 +112,10 @@ def _import_inference() -> Any:
             llm_request_key,
             retriever_request_key,
         )
-        from cyclesentinel.inference.base import ChatMessage
 
+        # Aligned with LLM_TURNS: the exact messages the agent lane sends per turn (system + user),
+        # so cassette keys are built from prompts.py — the single source of truth (never duplicated).
+        message_builders = [plan_messages, brief_messages]
         return {
             "get_settings": get_settings,
             "Cassette": Cassette,
@@ -126,7 +123,7 @@ def _import_inference() -> Any:
             "get_visual_retriever": get_visual_retriever,
             "llm_request_key": llm_request_key,
             "retriever_request_key": retriever_request_key,
-            "ChatMessage": ChatMessage,
+            "message_builders": message_builders,
             "RuleType": RuleType,
         }
     except Exception as exc:  # noqa: BLE001 — manual tool: surface wiring gaps plainly.
@@ -146,12 +143,16 @@ async def _record_live(api: dict[str, Any]) -> int:
 
     llm = api["get_llm_client"](settings)
     retriever = api["get_visual_retriever"](settings)
+    builders = api["message_builders"]
     for spec in build_request_specs():
-        for prompt in spec.llm_prompts:
-            messages = [api["ChatMessage"](role="user", content=prompt)]
-            key = api["llm_request_key"](messages, None, settings.cs_llm_model)
+        llm_dir = CASSETTES / spec.case / "llm"
+        for turn, build in zip(LLM_TURNS, builders, strict=True):
+            messages = build(spec.query)
             resp = await llm.chat(messages)
-            api["Cassette"](CASSETTES / spec.case / "llm").save(key, resp.model_dump())
+            # Save both the human-inspectable content file and the sha256-keyed file for this env.
+            api["Cassette"](llm_dir).save(f"{turn}", resp.model_dump())  # writes <turn>.json
+            key = api["llm_request_key"](messages, None, settings.cs_llm_model)
+            api["Cassette"](llm_dir).save(key, resp.model_dump())
         for rule_type in spec.branches:
             rt = api["RuleType"](rule_type)
             key = api["retriever_request_key"](spec.query, rt, 2, settings.cs_retriever_model)
@@ -159,22 +160,22 @@ async def _record_live(api: dict[str, Any]) -> int:
             api["Cassette"](CASSETTES / spec.case / "retriever").save(
                 key, [h.model_dump() for h in hits]
             )
-        print(f"recorded {spec.case}: llm={len(spec.llm_prompts)}, retriever={len(spec.branches)}")
+        print(f"recorded {spec.case}: llm={len(LLM_TURNS)}, retriever={len(spec.branches)}")
     return 0
 
 
 def _seed_offline(api: dict[str, Any]) -> int:
     """Re-key the hand-authored content files to their sha256 filenames (no network)."""
     settings = api["get_settings"]()
+    builders = api["message_builders"]
     for spec in build_request_specs():
         llm_dir = CASSETTES / spec.case / "llm"
-        for turn, prompt in zip(LLM_TURNS, spec.llm_prompts, strict=True):
+        for turn, build in zip(LLM_TURNS, builders, strict=True):
             src = llm_dir / f"{turn}.json"
             if not src.exists():
                 print(f"seed: missing authored content {src}", file=sys.stderr)
                 return 4
-            messages = [api["ChatMessage"](role="user", content=prompt)]
-            key = api["llm_request_key"](messages, None, settings.cs_llm_model)
+            key = api["llm_request_key"](build(spec.query), None, settings.cs_llm_model)
             api["Cassette"](llm_dir).save(key, _load_json(src))
         ret_dir = CASSETTES / spec.case / "retriever"
         for rule_type in spec.branches:
@@ -185,7 +186,7 @@ def _seed_offline(api: dict[str, Any]) -> int:
             rt = api["RuleType"](rule_type)
             key = api["retriever_request_key"](spec.query, rt, 2, settings.cs_retriever_model)
             api["Cassette"](ret_dir).save(key, _load_json(src))
-        print(f"seeded {spec.case}: llm={len(spec.llm_prompts)}, retriever={len(spec.branches)}")
+        print(f"seeded {spec.case}: llm={len(LLM_TURNS)}, retriever={len(spec.branches)}")
     return 0
 
 
