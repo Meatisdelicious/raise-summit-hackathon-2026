@@ -14,7 +14,7 @@ from the prior draw; progesterone is borderline for day 8.
 | 0:50–1:15 | **Money shot #1** | Because the OHSS composite **trips**, the **Prime-8B visual retriever** pulls the exact **OHSS-prevention SOP page** — a page it would *not* have touched for a normal patient. Show the retrieved page + score; Kimi K2 reads its text and cites §4.2. |
 | 1:15–1:30 | **Money shot #2** | It *also* notices **progesterone borderline for day 8**, so it retrieves the **premature-luteinization rule page** (a second computation-triggered visual retrieval). Cited §3.1. |
 | 1:30–1:45 | **Action + brief** | Computes **next-draw timing (24h not 48h)** → emits the brief: "High OHSS-risk trajectory; SOP §4.2 → coasting vs agonist-trigger; progesterone borderline per §3.1 → monitor for freeze-all; next draw 24h." Every clause cited. |
-| 1:45–2:00 | **Escalate + close** | **Escalation flag → biologist validates** → clinician alert. Close: "Cycle Sentinel doesn't decide medicine. It makes sure the right rule reaches the right person, in time — and it proves why." |
+| 1:45–2:00 | **Escalate + close** | **Escalation flag → biologist validates** → clinician alert. Close: "MILA doesn't decide medicine. It makes sure the right rule reaches the right person, in time — and it proves why." |
 
 ## Why no judge can call it RAG (say this)
 > One patient produced **two computation-triggered retrievals** a normal patient wouldn't have caused,

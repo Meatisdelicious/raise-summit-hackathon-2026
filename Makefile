@@ -1,4 +1,4 @@
-# Cycle Sentinel harness. Lean targets. Backend = apps/api (pkg cyclesentinel); frontend = apps/web (Raph).
+# MILA harness. Lean targets. Backend = apps/api (pkg cyclesentinel); frontend = apps/web (Raph).
 # Inference is deterministic in replay mode for tests; live mode calls Vultr. See docs/doc.md.
 
 SHELL := /bin/bash

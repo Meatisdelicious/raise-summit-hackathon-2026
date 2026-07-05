@@ -1,6 +1,6 @@
-# cyclesentinel — Cycle Sentinel backend
+# cyclesentinel — MILA backend
 
-Python/FastAPI backend for **Cycle Sentinel**, the ovarian-stimulation monitoring & escalation agent
+Python/FastAPI backend for **MILA**, the ovarian-stimulation monitoring & escalation agent
 (RAISE Summit Hackathon 2026, Vultr enterprise-agent track). Package: `cyclesentinel` (src layout).
 
 The seam with the React frontend is frozen in [`../../docs/CONTRACTS.md`](../../docs/CONTRACTS.md);

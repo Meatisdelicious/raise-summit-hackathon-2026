@@ -47,7 +47,7 @@ def create_app() -> FastAPI:
             task.cancel()
         engine.dispose()
 
-    app = FastAPI(title="Cycle Sentinel API", version="0.1.0", lifespan=lifespan)
+    app = FastAPI(title="MILA API", version="0.1.0", lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],

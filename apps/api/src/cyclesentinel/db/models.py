@@ -1,4 +1,4 @@
-"""SQLAlchemy 2.0 typed ORM rows for Cycle Sentinel.
+"""SQLAlchemy 2.0 typed ORM rows for MILA.
 
 Portable column types only (SQLite for local/CI, Postgres for the demo): ``String``/``Text`` for
 UUID-text ids, ``JSON`` (not ``JSONB``) for list-valued columns such as ``states[]`` and
@@ -15,7 +15,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
-    """Declarative base for all Cycle Sentinel ORM rows."""
+    """Declarative base for all MILA ORM rows."""
 
 
 class PatientRow(Base):

@@ -3,7 +3,7 @@
 Binding on everyone working in this repo.
 
 ## Product boundary — why this is not a "medical advice bot"
-- **Enterprise user = the lab biologist + the PMA clinician. Never the patient.** Cycle Sentinel is
+- **Enterprise user = the lab biologist + the PMA clinician. Never the patient.** MILA is
   internal triage / professional clinical-decision-support, exactly like a clinical-trial-matching tool.
 - **A human validates before anything reaches the clinic or patient.** The agent drafts a brief and an
   escalation flag; the biologist approves/edits/rejects. No output is auto-sent.

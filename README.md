@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🩺 Cycle Sentinel
+# 🩺 MILA
 
 ### The ovarian-stimulation follow-up that reads the trajectory, **proves** the risk, and **cites** the rule — before the deadline is forgotten.
 
@@ -27,7 +27,7 @@ The failure mode isn't a lack of data — it's that **nobody rebuilds the trajec
 
 ## The idea
 
-For **every new serial result**, Cycle Sentinel:
+For **every new serial result**, MILA:
 
 1. **rebuilds** the patient's hormone trajectory from her fragmented records,
 2. runs **deterministic calculators** (rate-of-rise, OHSS composite, progesterone-for-cycle-day, response-curve…),

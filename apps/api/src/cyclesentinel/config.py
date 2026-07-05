@@ -1,4 +1,4 @@
-"""Runtime configuration for Cycle Sentinel.
+"""Runtime configuration for MILA.
 
 Settings are read from the environment (and an optional ``.env``) via ``pydantic-settings``.
 Every default is chosen so that tests and ``make dev`` run offline with zero infrastructure:

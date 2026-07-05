@@ -1,6 +1,6 @@
-# gitleaks config for Cycle Sentinel — secrets + a few health/PII heuristics.
+# gitleaks config for MILA — secrets + a few health/PII heuristics.
 # Baseline rules ship with gitleaks; this adds project-specific allow/deny.
-title = "Cycle Sentinel gitleaks"
+title = "MILA gitleaks"
 
 [extend]
 useDefault = true

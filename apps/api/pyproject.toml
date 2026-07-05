@@ -1,7 +1,7 @@
 [project]
 name = "cyclesentinel"
 version = "0.1.0"
-description = "Cycle Sentinel — ovarian-stimulation monitoring & escalation agent (RAISE Summit Hackathon 2026)"
+description = "MILA — ovarian-stimulation monitoring & escalation agent (RAISE Summit Hackathon 2026)"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [

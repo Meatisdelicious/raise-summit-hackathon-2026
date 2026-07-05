@@ -1,4 +1,4 @@
-# API contract — Cycle Sentinel
+# API contract — MILA
 
 The seam between the FastAPI backend (`apps/api`, pkg `cyclesentinel`) and the React frontend
 (`apps/web`, Raph). **Raph builds against this file** — it's the source of truth; he does not need the

@@ -1,4 +1,4 @@
-# Cycle Sentinel / MILA — the pitch
+# MILA — the pitch
 
 **A 3-minute pitch for a non-biologist audience. Every number below is real and sourced ([Grounding & sources](#-grounding--sources)).**
 
