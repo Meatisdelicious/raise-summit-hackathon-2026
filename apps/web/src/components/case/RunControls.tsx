@@ -3,7 +3,7 @@ import type { PlayerStatus } from "../../hooks/useTracePlayer";
 const statusText: Record<PlayerStatus, string> = {
   idle: "",
   starting: "Connecting to the models…",
-  playing: "MILA is reviewing — watch it think, step by step.",
+  playing: "MILA is reviewing. Watch it think, step by step.",
   done: "Review complete.",
   error: "The run failed.",
 };

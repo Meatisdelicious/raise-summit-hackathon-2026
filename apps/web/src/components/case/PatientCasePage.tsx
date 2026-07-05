@@ -92,7 +92,7 @@ export function PatientCasePage() {
             </span>
             {patient.pcos_flag && (
               <span className="chip">
-                <Term name="PCOS">PCOS</Term> — higher over-response risk
+                <Term name="PCOS">PCOS</Term>: higher over-response risk
               </span>
             )}
           </div>
@@ -119,7 +119,7 @@ export function PatientCasePage() {
             <h2 className="section__title">How MILA is thinking</h2>
             <p className="section__hint">
               Each step is a measurement or a decision. Watch for where it goes back for a specific
-              protocol rule — that's the agent at work.
+              protocol rule. That's the agent at work.
             </p>
           </div>
           <div className="trace-card">

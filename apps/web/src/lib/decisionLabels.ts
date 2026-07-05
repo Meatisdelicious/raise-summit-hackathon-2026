@@ -12,13 +12,13 @@ export const decisionStateLabels: Record<
 > = {
   ROUTINE_CONTINUE: {
     label: "On track",
-    description: "On track — continue as planned.",
+    description: "On track. Continue as planned.",
     tone: "success",
   },
   OHSS_RISK_ESCALATE: {
     label: "Over-response risk",
     description:
-      "The ovaries may be over-responding — this can become dangerous and needs a doctor now.",
+      "The ovaries may be over-responding. This can become dangerous and needs a doctor now.",
     tone: "danger",
   },
   PREMATURE_LUTEINIZATION_FLAG: {
@@ -38,7 +38,7 @@ export const decisionStateLabels: Record<
   },
   AMBIGUOUS_REQUIRES_REVIEW: {
     label: "Needs a human review",
-    description: "The data is unclear — a human should review.",
+    description: "The data is unclear. A human should review.",
     tone: "info",
   },
 };

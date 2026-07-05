@@ -64,7 +64,7 @@ def compute_response_curve(
         value=round(avg_pct_per_day, 1),
         detail=(
             f"{str(protocol)}: E2 avg {avg_pct_per_day:+.0f}%/day, "
-            f"latest {last_e2:.0f} pg/mL — {verdict}"
+            f"latest {last_e2:.0f} pg/mL, {verdict}"
         ),
         tripped=tripped,
     )

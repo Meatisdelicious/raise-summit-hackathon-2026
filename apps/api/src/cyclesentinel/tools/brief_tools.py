@@ -68,7 +68,7 @@ async def _create_monitoring_brief(
 async def _escalate_to_biologist(
     ctx: ToolContext, args: EscalateToBiologistArgs
 ) -> EscalationResult:
-    reason = f" — {args.reason}" if args.reason else ""
+    reason = f": {args.reason}" if args.reason else ""
     return EscalationResult(
         level=args.level,
         to=args.to,

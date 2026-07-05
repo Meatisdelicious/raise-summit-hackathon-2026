@@ -138,6 +138,11 @@
   outline-offset: 3px;
 }
 
+/* Anchor targets stop below the sticky nav instead of sliding under it. */
+.selene-landing section[id] {
+  scroll-margin-top: 6rem;
+}
+
 /* --- Nav --- */
 .ls-nav {
   position: sticky;

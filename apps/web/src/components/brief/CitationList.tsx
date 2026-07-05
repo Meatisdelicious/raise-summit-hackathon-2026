@@ -4,7 +4,7 @@ export function CitationList({ citations }: { citations: Citation[] }) {
   if (citations.length === 0) {
     return (
       <p className="citation-list__empty">
-        No protocol rule was needed — the response was routine, so MILA didn't go looking for one.
+        No protocol rule was needed: the response was routine, so MILA didn't go looking for one.
       </p>
     );
   }

@@ -19,7 +19,7 @@ export const signalLabels: Record<string, Friendly> = {
   },
   e2_per_follicle: {
     friendly: "Estrogen per follicle",
-    tooltip: "Estrogen shared across the growing follicles — a balance check.",
+    tooltip: "Estrogen shared across the growing follicles: a balance check.",
   },
   ohss_composite: {
     friendly: "Over-response risk score",
@@ -52,14 +52,14 @@ export function signalLabel(name: string): Friendly {
 
 // --- Clinical terms (tooltips via <Term>) --------------------------------------------------
 export const terms: Record<string, string> = {
-  E2: "Estrogen (estradiol) — the main hormone that rises as follicles grow.",
-  OHSS: "Ovarian over-response — when the ovaries react too strongly; can become serious.",
+  E2: "Estrogen (estradiol), the main hormone that rises as follicles grow.",
+  OHSS: "Ovarian over-response: when the ovaries react too strongly; can become serious.",
   PCOS: "A hormonal condition that raises the over-response risk.",
   progesterone: "Rises too early → egg timing suffers.",
   "cycle day": "Day of the stimulation cycle.",
   AMH: "A marker of ovarian reserve (how many eggs are available).",
-  AFC: "Antral follicle count — a marker of ovarian reserve, seen on ultrasound.",
-  LH: "Luteinizing hormone — the surge that matures and releases the egg.",
+  AFC: "Antral follicle count, a marker of ovarian reserve, seen on ultrasound.",
+  LH: "Luteinizing hormone, the surge that matures and releases the egg.",
 };
 
 // --- Escalation -> calm plain status -------------------------------------------------------
@@ -71,8 +71,8 @@ export interface PlainStatus {
 }
 
 export const escalationStatus: Record<EscalationLevel, PlainStatus> = {
-  none: { word: "On track", tone: "success", hint: "Responding as expected — continue as planned." },
-  info: { word: "Watch", tone: "warning", hint: "Something to keep an eye on — flagged for review." },
+  none: { word: "On track", tone: "success", hint: "Responding as expected. Continue as planned." },
+  info: { word: "Watch", tone: "warning", hint: "Something to keep an eye on, flagged for review." },
   urgent: {
     word: "Needs attention now",
     tone: "danger",

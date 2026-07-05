@@ -93,14 +93,14 @@ function describe(event: AgentEvent): StepDescriptor {
         tone: "success",
         eyebrow: "Brief",
         title: "Drafted the monitoring brief",
-        body: "MILA's read is on the right — flags, interpretation and the exact protocol lines it cited.",
+        body: "MILA's read is on the right: flags, interpretation and the exact protocol lines it cited.",
       };
     case "escalate":
       return {
         tone: event.level === "urgent" ? "danger" : "warning",
         eyebrow: "Escalate",
         title: "Flagged for review",
-        body: `Flagged for the ${event.to} to review — nothing is sent to the patient.`,
+        body: `Flagged for the ${event.to} to review. Nothing is sent to the patient.`,
       };
     case "error":
       return {
@@ -195,8 +195,8 @@ export function TraceEventItem({ item }: { item: TraceItem }) {
           )}
 
           <p className="trace-pair__caption">
-            It went back for the exact protocol rule <em>because of what it just measured</em> —
-            that's what makes MILA an agent, not a search box.
+            It went back for the exact protocol rule <em>because of what it just measured</em>.
+            That's what makes MILA an agent, not a search box.
           </p>
         </div>
       </div>

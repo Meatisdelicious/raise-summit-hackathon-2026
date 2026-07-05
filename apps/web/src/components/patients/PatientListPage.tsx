@@ -15,7 +15,7 @@ export function PatientListPage() {
           Who needs a doctor's attention?
         </h1>
         <p className="page-head__lede">
-          MILA reviews each patient's hormone response and flags the ones that need a closer look —
+          MILA reviews each patient's hormone response and flags the ones that need a closer look,
           so the team can focus on what matters. Open a patient to see how it reached its read.
         </p>
       </div>

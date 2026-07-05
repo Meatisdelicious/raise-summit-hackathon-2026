@@ -1,10 +1,11 @@
 import { useState, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../api";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [resetting, setResetting] = useState(false);
   const [resetMessage, setResetMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   async function handleReset() {
     setResetting(true);
@@ -12,6 +13,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     try {
       await api.resetDemo();
       setResetMessage("Demo state reset.");
+      navigate("/app/patients/pat-K");
     } finally {
       setResetting(false);
     }
@@ -24,7 +26,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           MILA
         </Link>
         <span className="app-shell__subtitle">
-          Internal monitoring — human-validated before the clinic
+          Internal monitoring, human-validated before the clinic
         </span>
         <button
           type="button"
