@@ -31,7 +31,7 @@ This is not a rare edge case. More than **2 million IVF cycles** happen every ye
 million in Europe alone**. Moderate-to-severe OHSS strikes **1 to 5%** of them. That's tens of thousands of
 women a year, every year.
 
-And the deeper failure is one medicine already knows by name: **follow-up**. Study after study shows that
+And the deeper failure is one medicine already known by the name: **follow-up**. Study after study shows that
 **20% to 60% of abnormal test results are never properly followed up.** Every one of those is a warning that
 was sitting in the system — and slipped through the cracks. On top of the human cost, each IVF attempt costs
 **€3,500 to €7,500 in Europe** — and most patients need more than two. One missed signal can waste a cycle,
