@@ -1,10 +1,10 @@
-# AGENTS.md — Cycle Sentinel conventions
+# AGENTS.md — MILA conventions
 
 Short conventions file for anyone (human or AI) working in this repo. The product spec is
 [`docs/doc.md`](docs/doc.md); the PRD is [`docs/PRD.md`](docs/PRD.md); the API contract is
 [`docs/CONTRACTS.md`](docs/CONTRACTS.md).
 
-> **Cycle Sentinel** — an ovarian-stimulation monitoring & escalation agent for the **lab biologist and
+> **MILA** — an ovarian-stimulation monitoring & escalation agent for the **lab biologist and
 > PMA clinician** (never the patient). As each serial hormone result arrives, it rebuilds the patient's
 > trajectory, runs deterministic calculators, conditionally retrieves the governing protocol/SOP rule
 > based on what those computations reveal, and emits a **cited monitoring brief** with an **escalation

@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Cycle Sentinel** (product name in the UI: **MILA**) is an ovarian-stimulation (IVF) monitoring &
+**MILA** (product name in the UI: **MILA**) is an ovarian-stimulation (IVF) monitoring &
 escalation *agent* for a lab biologist — RAISE Summit 2026, Vultr enterprise-agent track. Monorepo:
 backend `apps/api` (Python 3.12 / FastAPI, pkg `cyclesentinel`, `src` layout) + frontend `apps/web`
 (React 18 / Vite / react-router / recharts). The pitch audience is **non-biologists** — the UI keeps

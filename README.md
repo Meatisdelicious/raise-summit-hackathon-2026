@@ -154,7 +154,7 @@ flowchart TB
     Web["React frontend · apps/web<br/>(teammate — builds on the contract)"]
     subgraph EU["🇪🇺 Vultr — EU region (HDS-aligned)"]
         direction TB
-        API["FastAPI backend · cyclesentinel<br/>agent loop · 11 tools · 6 calculators"]
+        API["FastAPI backend · MILA<br/>agent loop · 11 tools · 6 calculators"]
         LLM["Kimi K2.6<br/>POST /v1/chat/completions · temp 0 · JSON-only"]
         VS["Vultr Vector Store<br/>csohss · cslut · cspoor · csstim"]
         RR["Vultron Prime-8B<br/>rerank · /v1/rerank"]
@@ -195,7 +195,7 @@ flowchart TB
 
 ## 🗂️ Repository architecture
 
-Monorepo: **`apps/api`** (this build — Python/FastAPI, package `cyclesentinel`) and **`apps/web`** (React frontend, teammate, builds against the frozen contract). `57` source modules · `45` test modules · `190` tests.
+Monorepo: **`apps/api`** (this build — Python/FastAPI, package `MILA`) and **`apps/web`** (React frontend, teammate, builds against the frozen contract). `57` source modules · `45` test modules · `190` tests.
 
 ```text
 raise-summit-hackathon-2026/
@@ -227,7 +227,7 @@ raise-summit-hackathon-2026/
 │   ├── ci.yml                    ← privacy + lint + typecheck + tests (replay, offline)
 │   └── smoke-live.yml            ← manual live smoke against Vultr (never on PRs)
 │
-└── apps/api/                     ← the backend (package `cyclesentinel`, src layout)
+└── apps/api/                     ← the backend (package `M`, src layout)
     ├── pyproject.toml            ← deps · ruff · mypy --strict · pytest config
     └── src/cyclesentinel/
         ├── main.py               ← FastAPI app factory + lifespan (creates tables, seeds demo)
