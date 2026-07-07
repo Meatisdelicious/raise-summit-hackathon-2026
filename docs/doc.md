@@ -1,4 +1,4 @@
-# Cycle Sentinel — technical spec
+# MILA — technical spec
 
 Lean build spec for the ovarian-stimulation monitoring & escalation agent. Product framing is in
 [`PRD.md`](PRD.md); the API/TS contract is in [`CONTRACTS.md`](CONTRACTS.md); safety in [`safety.md`](safety.md).

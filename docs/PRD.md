@@ -1,4 +1,4 @@
-# Cycle Sentinel — PRD
+# MILA — PRD
 
 **Track:** RAISE Summit Hackathon 2026 — Statement Two, Vultr enterprise agent
 **Type:** Web-based, document-grounded clinical-operations agent (internal triage & escalation)
@@ -7,7 +7,7 @@
 ---
 
 ## One-sentence pitch
-> Cycle Sentinel sits between the hormone assay and the clinician: for every new monitoring result in an
+> MILA sits between the hormone assay and the clinician: for every new monitoring result in an
 > IVF stimulation cycle, it rebuilds the patient's trajectory, computes the risk signals, pulls the
 > exact protocol rule that the computation says applies, and hands the biologist a cited, ready-to-validate
 > escalation brief — before a missed or mis-timed value wrecks the cycle.
@@ -32,14 +32,14 @@ numbers) is a premium B2B differentiator with fertility centers.
 
 ## Who it's for (and who it is NOT for)
 - **Enterprise user:** the **lab biologist** (e.g. Mlab) and the **prescribing PMA clinician**.
-- **Never the patient.** Cycle Sentinel is professional clinical-decision-support / internal triage. It
+- **Never the patient.** MILA is professional clinical-decision-support / internal triage. It
   drafts an escalation; a human validates before anything reaches the clinic or patient. This keeps it off
   the "medical-advice bot" banned list; the reasoned brief + escalation (not a screen of charts) keeps it
   off the "dashboard" banned list.
 
 ## Core user journey
 1. A new hormone result lands for a patient in stimulation.
-2. Cycle Sentinel runs its agent loop and produces a **monitoring brief** with an escalation flag.
+2. MILA runs its agent loop and produces a **monitoring brief** with an escalation flag.
 3. The **biologist validates** (or edits/rejects) the brief → an escalation call/alert goes to the clinician.
 4. Every clause of the brief links to the **protocol/SOP article** it's grounded in.
 
